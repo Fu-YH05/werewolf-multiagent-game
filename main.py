@@ -82,7 +82,7 @@ def main():
     parser.add_argument('--mode', choices=['game', 'evolution', 'leaderboard', 'analyze'], 
                         default='game', help='运行模式')
     parser.add_argument('--iterations', type=int, default=5, help='进化迭代次数')
-    parser.add_argument('--players', nargs='+', default=["小刚", "小红", "小明", "小李", "张三", "李四", "王五"],
+    parser.add_argument('--players', nargs='+', default=["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"],
                         help='玩家名称列表')
     parser.add_argument('--logfile', type=str, help='复盘日志文件路径')
     parser.add_argument('--api-key', type=str, help='DeepSeek API Key (也可通过环境变量 DEEPSEEK_API_KEY 设置)')
