@@ -1,0 +1,142 @@
+{
+  "P1": {
+    "player_id": "P1",
+    "name": "小刚",
+    "role": "平民",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 3,
+    "losses": 2,
+    "win_rate": 60.0,
+    "avg_score": 2.0635000000000003,
+    "total_score": 10.3175,
+    "last_played": "2026-06-07T21:36:22.500326",
+    "skill_stats": {
+      "accuracy": 0.3,
+      "strategic_value": 0.6199999999999999,
+      "communication_quality": 0.3435,
+      "skill_usage": 0.1
+    }
+  },
+  "P2": {
+    "player_id": "P2",
+    "name": "小红",
+    "role": "平民",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 1,
+    "losses": 4,
+    "win_rate": 20.0,
+    "avg_score": 1.1618333333333333,
+    "total_score": 5.809166666666666,
+    "last_played": "2026-06-07T21:36:22.501056",
+    "skill_stats": {
+      "accuracy": 0.2833333333333333,
+      "strategic_value": 0.25999999999999995,
+      "communication_quality": 0.11850000000000001,
+      "skill_usage": 0.0
+    }
+  },
+  "P3": {
+    "player_id": "P3",
+    "name": "小明",
+    "role": "预言家",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 2,
+    "losses": 3,
+    "win_rate": 40.0,
+    "avg_score": 2.5458666666666665,
+    "total_score": 12.729333333333333,
+    "last_played": "2026-06-07T21:36:22.501655",
+    "skill_stats": {
+      "accuracy": 0.36666666666666664,
+      "strategic_value": 0.6,
+      "communication_quality": 0.3792,
+      "skill_usage": 0.2
+    }
+  },
+  "P4": {
+    "player_id": "P4",
+    "name": "小李",
+    "role": "女巫",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 3,
+    "losses": 2,
+    "win_rate": 60.0,
+    "avg_score": 1.8409999999999997,
+    "total_score": 9.204999999999998,
+    "last_played": "2026-06-07T21:36:22.502311",
+    "skill_stats": {
+      "accuracy": 0.35,
+      "strategic_value": 0.5,
+      "communication_quality": 0.29100000000000004,
+      "skill_usage": 0.1
+    }
+  },
+  "P5": {
+    "player_id": "P5",
+    "name": "张三",
+    "role": "猎人",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 1,
+    "losses": 4,
+    "win_rate": 20.0,
+    "avg_score": 2.8761,
+    "total_score": 14.3805,
+    "last_played": "2026-06-07T21:36:22.503002",
+    "skill_stats": {
+      "accuracy": 0.7,
+      "strategic_value": 0.6199999999999999,
+      "communication_quality": 0.35609999999999997,
+      "skill_usage": 0.6
+    }
+  },
+  "P6": {
+    "player_id": "P6",
+    "name": "李四",
+    "role": "狼人",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 2,
+    "losses": 3,
+    "win_rate": 40.0,
+    "avg_score": 2.217033333333333,
+    "total_score": 11.085166666666666,
+    "last_played": "2026-06-07T21:36:22.503713",
+    "skill_stats": {
+      "accuracy": 0.5333333333333333,
+      "strategic_value": 0.5199999999999999,
+      "communication_quality": 0.2637,
+      "skill_usage": 0.2
+    }
+  },
+  "P7": {
+    "player_id": "P7",
+    "name": "王五",
+    "role": "狼人",
+    "version": "v1.0",
+    "model": "deepseek-chat",
+    "total_games": 5,
+    "wins": 4,
+    "losses": 1,
+    "win_rate": 80.0,
+    "avg_score": 2.6539999999999995,
+    "total_score": 13.269999999999998,
+    "last_played": "2026-06-07T21:36:22.504335",
+    "skill_stats": {
+      "accuracy": 0.65,
+      "strategic_value": 0.6799999999999999,
+      "communication_quality": 0.324,
+      "skill_usage": 0.1
+    }
+  }
+}

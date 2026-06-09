@@ -1,0 +1,64 @@
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: '/api',
+  timeout: 60000,  // 增加到 60 秒，给游戏初始化足够时间
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+// 请求拦截器
+api.interceptors.request.use(
+  (config) => {
+    console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`)
+    return config
+  },
+  (error) => {
+    console.error('[API] Request error:', error)
+    return Promise.reject(error)
+  }
+)
+
+// 响应拦截器
+api.interceptors.response.use(
+  (response) => {
+    console.log(`[API] Response:`, response.data)
+    return response
+  },
+  (error) => {
+    console.error('[API] Response error:', error)
+    return Promise.reject(error)
+  }
+)
+
+export const gameApi = {
+  // 健康检查
+  checkHealth: () => api.get('/health'),
+  
+  // 开始新游戏
+  startGame: (apiKey = '') => api.post('/game/start', { api_key: apiKey }),
+  
+  // 获取游戏状态
+  getGameState: (gameId) => api.get(`/game/${gameId}/state`),
+  
+  // 获取新日志
+  getNewLogs: (gameId) => api.get(`/game/${gameId}/logs/new`),
+  
+  // 获取游戏状态
+  getStatus: () => api.get('/game/status'),
+  
+  // 获取历史记录
+  getHistory: () => api.get('/game/history'),
+  
+  // 获取回放
+  getReplay: (filename) => api.get(`/game/replay/${filename}`),
+  
+  // 获取排行榜
+  getLeaderboard: () => api.get('/leaderboard'),
+  
+  // 获取角色信息
+  getRolesInfo: () => api.get('/roles/info')
+}
+
+export default api
