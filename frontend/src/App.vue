@@ -41,8 +41,11 @@
           :duration="duration"
           :is-running="isRunning"
           :is-paused="isPaused"
+          :viewing-replay="viewingReplay"
+          :has-live-game="!!savedLiveState"
           @start="startGame"
           @toggle-pause="togglePause"
+          @stop="stopGame"
           @show-replay="showReplayModal = true"
         />
         
@@ -54,6 +57,14 @@
       
       <!-- 中间游戏区域 -->
       <main class="game-area">
+        <div v-if="viewingReplay" class="replay-banner">
+          <span>📽️ 观看回放 — {{ currentGameId }}</span>
+          <span v-if="savedLiveState" class="replay-banner-actions">
+            <span class="separator">|</span>
+            <button class="replay-return-btn" @click="returnToLive">🔙 返回直播</button>
+          </span>
+        </div>
+
         <GameInfoBar
           :phase="phase"
           :day="day"
@@ -189,9 +200,14 @@ const isHumanMode = ref(false)
 const showVotePanel = ref(false)
 const annotations = ref({})
 
+// 回放/直播分离状态
+const viewingReplay = ref(false)
+const savedLiveState = ref(null)
+
 const emptyMessage = computed(() => {
-  return isRunning.value 
-    ? '等待游戏进行中...' 
+  if (viewingReplay.value) return '观看回放中'
+  return isRunning.value
+    ? '等待游戏进行中...'
     : '点击"开始游戏"按钮开始新的对局'
 })
 
@@ -247,8 +263,22 @@ async function loadLeaderboard() {
 }
 
 async function startGame(humanPlayerIndex = -1, stepDelay = 1.5) {
+  // 如果正在看回放，清除回放状态
+  viewingReplay.value = false
+  savedLiveState.value = null
+
+  // 如果已经有游戏在运行，先自动停止
+  if (isRunning.value) {
+    try {
+      await gameApi.stopGame()
+    } catch (e) {
+      console.error('Failed to stop current game:', e)
+    }
+    stopPolling()  // 重置 isRunning 为 false
+  }
+
   isLoading.value = true
-  
+
   try {
     const apiKey = controlPanelRef.value?.apiKey || ''
     isHumanMode.value = humanPlayerIndex >= 0
@@ -270,12 +300,12 @@ async function startGame(humanPlayerIndex = -1, stepDelay = 1.5) {
     humanPendingAction.value = null
     showVotePanel.value = false
     isRunning.value = true
-    gameStartTime.value = Date.now()
-    
+    gameStartTime.value = data.start_time ? new Date(data.start_time).getTime() : Date.now()
+
     // 开始轮询
     startPolling()
     startDurationTimer()
-    
+
     console.log('Game started:', data)
   } catch (error) {
     console.error('Failed to start game:', error)
@@ -345,21 +375,60 @@ function startDurationTimer() {
   }, 1000)
 }
 
+async function stopGame() {
+  isLoading.value = true
+  try {
+    await gameApi.stopGame()
+    console.log('Game stop requested')
+  } catch (error) {
+    console.error('Failed to stop game:', error)
+  } finally {
+    isLoading.value = false
+  }
+  stopPolling()  // 前端立即停止，不再询问该局
+}
+
 function togglePause() {
   isPaused.value = !isPaused.value
+  if (isPaused.value) {
+    // 暂停时也暂停计时器
+    if (durationInterval.value) {
+      clearInterval(durationInterval.value)
+      durationInterval.value = null
+    }
+  } else {
+    // 恢复时恢复计时器
+    startDurationTimer()
+  }
 }
 
 async function loadReplay(item) {
   showReplayModal.value = false
   isLoading.value = true
-  
+
+  // 保存当前直播状态（如果有），方便返回
+  if (!savedLiveState.value && currentGameId.value) {
+    savedLiveState.value = {
+      gameId: currentGameId.value,
+      gameState: gameState.value ? { ...gameState.value } : null,
+      players: players.value ? [...players.value] : [],
+      logs: logs.value ? [...logs.value] : [],
+      voteResults: voteResults.value ? [...voteResults.value] : [],
+      isRunning: isRunning.value,
+      gameStartTime: gameStartTime.value
+    }
+  }
+
+  // 停止直播轮询（回放不轮询）
+  stopPolling()
+
   try {
     const response = await gameApi.getReplay(item.filename)
     const data = response.data
-    
+
     currentGameId.value = data.game_id
     gameState.value = data
-    
+
     // 转换players数据格式（后端返回的是字典）
     if (data.players && typeof data.players === 'object') {
       players.value = mergeAnnotations(Object.entries(data.players).map(([id, p]) => ({
@@ -371,11 +440,12 @@ async function loadReplay(item) {
     } else {
       players.value = mergeAnnotations(data.players || [])
     }
-    
+
     logs.value = data.logs || []
     voteResults.value = data.vote_results || []
     isRunning.value = false
-    
+    viewingReplay.value = true
+
     console.log('Replay loaded:', data)
   } catch (error) {
     console.error('Failed to load replay:', error)
@@ -383,6 +453,28 @@ async function loadReplay(item) {
   } finally {
     isLoading.value = false
   }
+}
+
+function returnToLive() {
+  if (!savedLiveState.value) return
+  const s = savedLiveState.value
+  currentGameId.value = s.gameId
+  gameState.value = s.gameState
+  players.value = s.players
+  logs.value = s.logs
+  voteResults.value = s.voteResults
+  isRunning.value = s.isRunning
+  gameStartTime.value = s.gameStartTime || Date.now()
+  viewingReplay.value = false
+  savedLiveState.value = null
+
+  // 如果直播游戏还在进行，恢复轮询
+  if (s.isRunning) {
+    startPolling()
+    startDurationTimer()
+  }
+
+  console.log('Returned to live game:', currentGameId.value)
 }
 
 function onHumanSubmitted(decision) {
@@ -414,11 +506,43 @@ function mergeAnnotations(dataPlayers) {
 }
 
 // 生命周期
-onMounted(() => {
+onMounted(async () => {
   generateStars()
-  checkHealth()
   loadHistory()
   loadLeaderboard()
+
+  // 刷新恢复：尝试重新连接到服务器上正在运行的游戏
+  try {
+    const healthResp = await gameApi.checkHealth()
+    const health = healthResp.data
+    console.log('Server health on mount:', health)
+    if (health.game?.running && health.game?.game_id) {
+      currentGameId.value = health.game.game_id
+      isRunning.value = true
+      isPaused.value = false
+
+      // 立即拉取当前状态
+      const stateResp = await gameApi.getGameState(health.game.game_id)
+      const state = stateResp.data
+      if (state && !state.error) {
+        gameState.value = state
+        players.value = mergeAnnotations(state.players || [])
+        logs.value = state.logs || []
+        voteResults.value = state.vote_results || []
+        // 使用服务端的 start_time 让计时器从游戏实际开始时间算起
+        gameStartTime.value = state.start_time ? new Date(state.start_time).getTime() : Date.now()
+        console.log('Reattached to running game:', health.game.game_id,
+          'start_time:', state.start_time,
+          'elapsed:', Math.floor((Date.now() - gameStartTime.value) / 1000) + 's')
+      } else {
+        gameStartTime.value = Date.now()
+      }
+      startPolling()
+      startDurationTimer()
+    }
+  } catch (e) {
+    console.error('Failed to reattach to running game:', e)
+  }
 })
 
 onUnmounted(() => {
@@ -558,6 +682,46 @@ onUnmounted(() => {
 
 .history-item:hover {
   @apply bg-white/10;
+}
+
+.replay-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  color: #fde68a;
+  flex-shrink: 0;
+}
+
+.replay-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.separator {
+  opacity: 0.3;
+}
+
+.replay-return-btn {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  padding: 3px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.replay-return-btn:hover {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #86efac;
 }
 
 .loading-overlay {

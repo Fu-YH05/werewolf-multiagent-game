@@ -1,0 +1,565 @@
+{
+  "game_id": "game_20260611_233640_3924",
+  "start_time": "2026-06-11T23:36:43.355335",
+  "end_time": "2026-06-11T23:37:50.986379",
+  "winner": "游戏被终止",
+  "days": 2,
+  "players": {
+    "P1": {
+      "name": "小刚",
+      "role": "预言家",
+      "is_alive": true
+    },
+    "P2": {
+      "name": "小红",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P3": {
+      "name": "小明",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P4": {
+      "name": "小李",
+      "role": "女巫",
+      "is_alive": true
+    },
+    "P5": {
+      "name": "张三",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P6": {
+      "name": "李四",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P7": {
+      "name": "王五",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P8": {
+      "name": "赵六",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P9": {
+      "name": "孙七",
+      "role": "猎人",
+      "is_alive": true
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(小刚) 底牌: 预言家",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:36:43.355362"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(小红) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P2",
+      "timestamp": "2026-06-11T23:36:43.355389"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(小明) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:36:43.355401"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(小李) 底牌: 女巫",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:36:43.355413"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(张三) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:36:43.355425"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(李四) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P6",
+      "timestamp": "2026-06-11T23:36:43.355438"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(王五) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T23:36:43.355453"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(赵六) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P8",
+      "timestamp": "2026-06-11T23:36:43.355467"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(孙七) 底牌: 猎人",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:36:43.355482"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:36:43.355496"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:36:43.568747"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P5(张三) [狼群密语]: 我觉得第一晚信息太少，稳妥起见先不急着杀太显眼的人，P1或P9这种边缘玩家比较安全。",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:36:45.549933"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P8(赵六) [狼群密语]: 我觉得今晚先不动声色的观察一下，杀个不太起眼的玩家比较稳妥。",
+      "hidden": true,
+      "player_id": "P8",
+      "timestamp": "2026-06-11T23:36:46.805724"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P1",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:36:48.585308"
+    },
+    {
+      "day": 1,
+      "phase": "女巫行动",
+      "type": "ACTION",
+      "content": "女巫使用了解药",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:36:50.536475"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P1 结果: 好人",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:37:29.441406"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:37:29.652842"
+    },
+    {
+      "day": 1,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 平安夜",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:29.856126"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:30.058196"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "INFO",
+      "content": "首轮发言随机顺序: P5,P4,P3,P9,P1,P2,P6,P8,P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:30.260146"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 我觉得可能，大家好，我是P5。首夜平安夜，可能是女巫救了人，也可能是狼人空刀，信息还很少。我觉得大家不用急着下结论，先听听每个人的发言，看看有没有明显的逻辑矛盾或者行为异常。我个人倾向于先观望，等第二轮再综合判断。希望大家都能理性发言，不要情绪化。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:33.425593"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(小李) 发言: 我觉得可能，大家好，我是P4。首夜平安夜确实信息有限，P5说的有道理，现在下结论为时过早。我觉得大家先聊聊自己的一些想法和观察，不用急着站队或者攻击。我目前没有特别怀疑的对象，会认真听每个人的发言再做判断。希望大家都能保持理性讨论。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:36.660857"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 大家好，我是P3。我也觉得平安夜没啥好说的，大家都先听听吧。我没什么想法，先看看后面的人怎么说，到时...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:39.375036"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 我觉得吧，哎呀，大家好我是P9！刚才听P5、P4还有P3都说先观望，我觉得很有道理啊，首夜平安夜确实没什么信息，谁都不知道发生了什么。我也没啥特别的想法，就是觉得大家别太急着下结论，先听听每个人的发言再说。我这个人比较直，容易相信别人，但也会认真观察的。好了，我就说这么多，后面的人继续吧！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:43.432237"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P1(小刚) 发言: PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:49.955252"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.082192"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(李四) 发言: PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.207660"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(赵六) 发言: PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.330015"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(王五) 发言: PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.455736"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.581465"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784619"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784668"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784697"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784718"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784737"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(李四) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784758"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784779"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(赵六) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.784968"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.785015"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "GAME_STOP",
+      "content": "游戏被手动终止",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:37:50.986298"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P5",
+      "action_type": "kill",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:36:48.585342",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "save",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:36:50.536499",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "check",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:37:29.441440",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:33.425636",
+      "reasoning": "我觉得可能，大家好，我是P5。首夜平安夜，可能是女巫救了人，也可能是狼人空刀，信息还很少。我觉得大家不用急着下结论，先听听每个人的发言，看看有没有明显的逻辑矛盾或者行为异常。我个人倾向于先观望，等第二轮再综合判断。希望大家都能理性发言，不要情绪化。"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:36.660912",
+      "reasoning": "我觉得可能，大家好，我是P4。首夜平安夜确实信息有限，P5说的有道理，现在下结论为时过早。我觉得大家先聊聊自己的一些想法和观察，不用急着站队或者攻击。我目前没有特别怀疑的对象，会认真听每个人的发言再做判断。希望大家都能保持理性讨论。"
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:39.375284",
+      "reasoning": "大家好，我是P3。我也觉得平安夜没啥好说的，大家都先听听吧。我没什么想法，先看看后面的人怎么说，到时..."
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:43.432267",
+      "reasoning": "我觉得吧，哎呀，大家好我是P9！刚才听P5、P4还有P3都说先观望，我觉得很有道理啊，首夜平安夜确实没什么信息，谁都不知道发生了什么。我也没啥特别的想法，就是觉得大家别太急着下结论，先听听每个人的发言再说。我这个人比较直，容易相信别人，但也会认真观察的。好了，我就说这么多，后面的人继续吧！"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:49.955298",
+      "reasoning": "PASS"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:50.082265",
+      "reasoning": "PASS"
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:50.207757",
+      "reasoning": "PASS"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:50.330065",
+      "reasoning": "PASS"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:37:50.455782",
+      "reasoning": "PASS"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784663",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784695",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784716",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784735",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784756",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784777",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.784954",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.785011",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:37:50.785048",
+      "reasoning": ""
+    }
+  ]
+}

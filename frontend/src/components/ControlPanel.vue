@@ -42,7 +42,6 @@
     
     <button
       class="btn btn-primary"
-      :disabled="isRunning"
       @click="$emit('start', isHumanMode ? (humanPlayerIndex) : -1, stepDelay)"
     >
       🚀 开始新游戏
@@ -55,7 +54,15 @@
     >
       {{ isPaused ? '▶️ 继续' : '⏸️ 暂停' }}
     </button>
-    
+
+    <button
+      class="btn btn-danger"
+      :disabled="!isRunning && !(viewingReplay && hasLiveGame)"
+      @click="$emit('stop')"
+    >
+      🛑 结束游戏
+    </button>
+
     <button
       class="btn btn-secondary"
       @click="$emit('showReplay')"
@@ -104,10 +111,18 @@ const props = defineProps({
     default: '0:00'
   },
   isRunning: Boolean,
-  isPaused: Boolean
+  isPaused: Boolean,
+  viewingReplay: {
+    type: Boolean,
+    default: false
+  },
+  hasLiveGame: {
+    type: Boolean,
+    default: false
+  }
 })
 
-const emit = defineEmits(['start', 'togglePause', 'showReplay'])
+const emit = defineEmits(['start', 'togglePause', 'stop', 'showReplay'])
 
 const apiKey = ref('')
 const isHumanMode = ref(false)
@@ -201,5 +216,19 @@ watch(apiKey, (newVal) => {
   @apply appearance-none w-4 h-4 rounded-full;
   background: #818cf8;
   cursor: pointer;
+}
+
+.btn-danger {
+  @apply w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-40;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.35));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  cursor: pointer;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.5));
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fecaca;
 }
 </style>

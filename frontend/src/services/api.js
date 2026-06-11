@@ -67,6 +67,9 @@ export const gameApi = {
   // 获取排行榜
   getLeaderboard: () => api.get('/leaderboard'),
   
+  // 停止当前游戏
+  stopGame: () => api.post('/game/stop'),
+
   // 获取角色信息
   getRolesInfo: () => api.get('/roles/info')
 }

@@ -1,0 +1,587 @@
+{
+  "game_id": "game_20260611_215425_3560",
+  "start_time": "2026-06-11T21:54:29.987079",
+  "end_time": "2026-06-11T21:56:07.387359",
+  "winner": "狼人阵营",
+  "days": 2,
+  "players": {
+    "P1": {
+      "name": "小刚",
+      "role": "女巫",
+      "is_alive": false
+    },
+    "P2": {
+      "name": "小红",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P3": {
+      "name": "小明",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P4": {
+      "name": "小李",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P5": {
+      "name": "张三",
+      "role": "预言家",
+      "is_alive": false
+    },
+    "P6": {
+      "name": "李四",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P7": {
+      "name": "王五",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P8": {
+      "name": "赵六",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P9": {
+      "name": "孙七",
+      "role": "猎人",
+      "is_alive": false
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(小刚) 底牌: 女巫",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T21:54:29.987112"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(小红) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P2",
+      "timestamp": "2026-06-11T21:54:29.987396"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(小明) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T21:54:29.987431"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(小李) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T21:54:29.987441"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(张三) 底牌: 预言家",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T21:54:29.987449"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(李四) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P6",
+      "timestamp": "2026-06-11T21:54:29.987458"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(王五) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T21:54:29.987487"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(赵六) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P8",
+      "timestamp": "2026-06-11T21:54:29.987608"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(孙七) 底牌: 猎人",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T21:54:29.987635"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:29.987689"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:31.501119"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P4(小李) [狼群密语]: 兄弟们，我觉得先杀P7，她上把发言太谨慎了，大概率是神牌，今晚直接带走！",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T21:54:35.669043"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P7(王五) [狼群密语]: 兄弟们，今晚先杀P6，他发言太稳了，留到后期不好对付。",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T21:54:37.280891"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P1",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T21:54:39.671205"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P6 结果: 好人",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T21:54:47.120034"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T21:54:48.625379"
+    },
+    {
+      "day": 1,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 小刚",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:50.136826"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:51.645404"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "INFO",
+      "content": "首轮发言随机顺序: P4,P2,P9,P5,P7,P6,P3,P8",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:53.148933"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(小李) 发言: 我觉得可能，大家好，我是小李。首夜信息有限，小刚的死亡让我们失去了一位玩家，但暂时无法判断他的身份。我觉得现在下任何结论都为时过早，还是先听听大家的发言，看看每个人的想法和态度。我建议大家不要急于站队或指控，先多观察，后面信息多了自然会更清晰。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:54:55.866970"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 我强烈认为，我是小红，各位！首夜小刚倒下了，但我们不能因为信息少就畏首畏尾！小李说得对，信息确实有限，但正因如此，我们更需要主动出击，而不是被动等待！我建议所有人今天都要明确表态，说出你怀疑的对象和理由，哪怕只是直觉也好。沉默和观望只会给狼人更多操作空间！另外，我注意到小李的发言虽然听起来很理性，但这种\"不要急于站队\"的说法，有时候恰恰是狼人想让我们放松警惕的烟雾弹！我奉劝各位，保持清醒，大胆发言，让我们从每个人的态度和逻辑中寻找突破口！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:01.355240"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 从逻辑角度分析，我是孙七，各位。首夜信息有限，小刚的身份我们无从得知，所以目前任何结论都只是猜测。我同意小李说的“多观察”，也理解小红说的“主动出击”——但主动出击不等于无的放矢。小红，你质疑小李的发言是烟雾弹，但你的发言本身是否也在试图引导节奏？在没有更多信息前，我认为保持开放心态、收集更多发言证据才是理性的选择。我建议大家先表明自己的基本态度，而不是急于指控。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:06.186652"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 我是张三，首夜没啥信息，小刚死了我也没啥想法。大家说的都有道理，我也没啥好补充的。就这样吧，听后面的...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:09.332682"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(王五) 发言: 从逻辑角度分析，我是王五，大家好。首夜信息确实有限，小刚的身份未知，我们无法认为他是好人还是狼人。我认为目前最好的想法是保持开放心态，收集更多信息。小李和孙七的发言都比较理性，小红虽然积极，但她的质疑缺乏具体依据——在没有足够证据前，指控任何人的发言是“烟雾弹”都略显草率。我建议大家先完整听一轮所有人的发言，再根据想法一致性和态度变化来做初步判断。我暂时没有明确的怀疑对象，后续会根据大家的发言再做想法。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:14.659681"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(李四) 发言: 我是李四，首夜没啥信息，小刚死了我也没啥想法。大家说的都挺有道理的，我没什么补充的，就这样吧，听后面...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:17.985631"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 从逻辑角度分析，大家好，我是小明。首夜信息确实有限，小刚的死亡无法为我们提供明确线索。我注意到小红对小李的质疑有些突兀——在没有实质证据的情况下，指控对方发言是“烟雾弹”本身缺乏想法支撑。相反，小李和孙七、王五的发言更符合理性想法的态度。此外，张三和李四的发言过于简短，几乎没有提供任何有效信息，这种“没啥想法”的态度在狼人杀中有时是狼人避免暴露的想法。我建议我们先完整听完所有发言，后续再根据想法一致性和态度变化做判断。目前我持开放态度，没有明确的怀疑对象。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:22.762135"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(赵六) 发言: 从逻辑角度分析，我是赵六，大家好。首夜信息有限，小刚的身份未知，我们确实无法做出明确判断。我注意到几个点：小红对小李的质疑缺乏具体依据，这种在没有证据的情况下指控他人发言是“烟雾弹”的行为本身值得警惕。另外，张三和李四的发言过于简短，几乎没有提供有效信息——在信息匮乏的首轮，这种“没啥想法”的态度可能是有意避免暴露立场。我建议大家先完整听完所有人的发言，后续再根据想法一致性和态度变化做判断。目前我没有明确的怀疑对象，保持开放态度。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:27.346937"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:28.257335"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:34.371121"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:36.891941"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:39.982245"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:43.080701"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(李四) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:45.326947"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:48.974331"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(赵六) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:52.275526"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:54.962326"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P5(张三) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:54.962399"
+    },
+    {
+      "day": 2,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:55:56.462674"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P4(小李) [狼群密语]: 哎呀，大家投票这么一致！P5肯定是预言家吧？我觉得今晚要不就杀P9，他弃权太奇怪了！",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T21:55:59.144782"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P7(王五) [狼群密语]: 兄弟们，P5被投出去是好事，今晚我建议刀P4小李，他投票太积极了，像是个带节奏的好人。",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T21:56:00.339251"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P9",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T21:56:02.867689"
+    },
+    {
+      "day": 2,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T21:56:04.380547"
+    },
+    {
+      "day": 2,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 孙七",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:56:05.882655"
+    },
+    {
+      "day": 2,
+      "phase": "游戏结束",
+      "type": "GAME_OVER",
+      "content": "游戏结束！胜利者是: 狼人阵营",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T21:56:07.387374"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P4",
+      "action_type": "kill",
+      "target": "P1",
+      "timestamp": "2026-06-11T21:54:39.671247",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "check",
+      "target": "P6",
+      "timestamp": "2026-06-11T21:54:47.120088",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:54:55.867014",
+      "reasoning": "我觉得可能，大家好，我是小李。首夜信息有限，小刚的死亡让我们失去了一位玩家，但暂时无法判断他的身份。我觉得现在下任何结论都为时过早，还是先听听大家的发言，看看每个人的想法和态度。我建议大家不要急于站队或指控，先多观察，后面信息多了自然会更清晰。"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:01.355371",
+      "reasoning": "我强烈认为，我是小红，各位！首夜小刚倒下了，但我们不能因为信息少就畏首畏尾！小李说得对，信息确实有限，但正因如此，我们更需要主动出击，而不是被动等待！我建议所有人今天都要明确表态，说出你怀疑的对象和理由，哪怕只是直觉也好。沉默和观望只会给狼人更多操作空间！另外，我注意到小李的发言虽然听起来很理性，但这种\"不要急于站队\"的说法，有时候恰恰是狼人想让我们放松警惕的烟雾弹！我奉劝各位，保持清醒，大胆发言，让我们从每个人的态度和逻辑中寻找突破口！"
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:06.186729",
+      "reasoning": "从逻辑角度分析，我是孙七，各位。首夜信息有限，小刚的身份我们无从得知，所以目前任何结论都只是猜测。我同意小李说的“多观察”，也理解小红说的“主动出击”——但主动出击不等于无的放矢。小红，你质疑小李的发言是烟雾弹，但你的发言本身是否也在试图引导节奏？在没有更多信息前，我认为保持开放心态、收集更多发言证据才是理性的选择。我建议大家先表明自己的基本态度，而不是急于指控。"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:09.332760",
+      "reasoning": "我是张三，首夜没啥信息，小刚死了我也没啥想法。大家说的都有道理，我也没啥好补充的。就这样吧，听后面的..."
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:14.659760",
+      "reasoning": "从逻辑角度分析，我是王五，大家好。首夜信息确实有限，小刚的身份未知，我们无法认为他是好人还是狼人。我认为目前最好的想法是保持开放心态，收集更多信息。小李和孙七的发言都比较理性，小红虽然积极，但她的质疑缺乏具体依据——在没有足够证据前，指控任何人的发言是“烟雾弹”都略显草率。我建议大家先完整听一轮所有人的发言，再根据想法一致性和态度变化来做初步判断。我暂时没有明确的怀疑对象，后续会根据大家的发言再做想法。"
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:17.985681",
+      "reasoning": "我是李四，首夜没啥信息，小刚死了我也没啥想法。大家说的都挺有道理的，我没什么补充的，就这样吧，听后面..."
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:22.762193",
+      "reasoning": "从逻辑角度分析，大家好，我是小明。首夜信息确实有限，小刚的死亡无法为我们提供明确线索。我注意到小红对小李的质疑有些突兀——在没有实质证据的情况下，指控对方发言是“烟雾弹”本身缺乏想法支撑。相反，小李和孙七、王五的发言更符合理性想法的态度。此外，张三和李四的发言过于简短，几乎没有提供任何有效信息，这种“没啥想法”的态度在狼人杀中有时是狼人避免暴露的想法。我建议我们先完整听完所有发言，后续再根据想法一致性和态度变化做判断。目前我持开放态度，没有明确的怀疑对象。"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T21:55:27.346990",
+      "reasoning": "从逻辑角度分析，我是赵六，大家好。首夜信息有限，小刚的身份未知，我们确实无法做出明确判断。我注意到几个点：小红对小李的质疑缺乏具体依据，这种在没有证据的情况下指控他人发言是“烟雾弹”的行为本身值得警惕。另外，张三和李四的发言过于简短，几乎没有提供有效信息——在信息匮乏的首轮，这种“没啥想法”的态度可能是有意避免暴露立场。我建议大家先完整听完所有人的发言，后续再根据想法一致性和态度变化做判断。目前我没有明确的怀疑对象，保持开放态度。"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:34.371210",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:36.892027",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:39.982338",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:43.080765",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:45.327045",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:48.974388",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T21:55:52.275622",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T21:55:54.962384",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "kill",
+      "target": "P9",
+      "timestamp": "2026-06-11T21:56:02.867802",
+      "reasoning": ""
+    }
+  ]
+}

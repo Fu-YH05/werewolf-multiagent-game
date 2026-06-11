@@ -1,0 +1,804 @@
+{
+  "game_id": "game_20260610_153428_6196",
+  "start_time": "2026-06-10T15:34:29.724276",
+  "end_time": "2026-06-10T15:36:37.291270",
+  "winner": "狼人阵营",
+  "days": 3,
+  "players": {
+    "P1": {
+      "name": "a",
+      "role": "预言家",
+      "is_alive": false
+    },
+    "P2": {
+      "name": "b",
+      "role": "女巫",
+      "is_alive": true
+    },
+    "P3": {
+      "name": "c",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P4": {
+      "name": "d",
+      "role": "猎人",
+      "is_alive": false
+    },
+    "P5": {
+      "name": "e",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P6": {
+      "name": "f",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P7": {
+      "name": "g",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P8": {
+      "name": "h",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P9": {
+      "name": "i",
+      "role": "平民",
+      "is_alive": false
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(a) 底牌: 预言家",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724306"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(b) 底牌: 女巫",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724331"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(c) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724336"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(d) 底牌: 猎人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724339"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(e) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724342"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(f) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724344"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(g) 底牌: 狼人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724347"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(h) 底牌: 狼人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724350"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(i) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724354"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724358"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:29.724376"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P1",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:31.739643"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P4 结果: 好人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:37.168197"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:37.168218"
+    },
+    {
+      "day": 1,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: a",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:37.168231"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:37.168236"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "INFO",
+      "content": "首轮发言随机顺序: P8,P9,P3,P7,P2,P5,P4,P6",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:37.168245"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(h) 发言: 我强烈认为，各位好，我是P8。第一天平安夜，要么女巫救了人，要么狼人没刀。但不管怎样，我们得先理清思路。我认为，首轮发言最重要的是观察谁在划水、谁在带节奏。我建议每个人都明确表态：你怀疑谁？为什么？别给我模棱两可的答案。我先说，我会重点关注那些发言模糊、不敢站边的人。游戏刚开始，信息有限，但态度要鲜明。谁想浑水摸鱼，我第一个不答应！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:41.545367"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(i) 发言: 哦，P8说得挺多啊，但我没啥想法。第一天嘛，啥信息都没有，划水也挺正常的。我随便跟个票就行了，别问我...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:44.047667"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(c) 发言: 我觉得可能，各位好，我是P3。P8的发言确实很积极，但首日信息有限，过于强烈的表态反而让人有些疑虑。P9划水也能理解，毕竟第一天大家都没什么线索。我建议先不急着下结论，多听听其他玩家的发言，看看后续谁的行为逻辑不一致。目前我会保持观察，暂时没有明确的怀疑对象。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:47.073834"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(g) 发言: 我强烈认为，各位好，我是P7。我完全同意P8的观点！首轮发言就该态度鲜明，不能含糊其辞。但我注意到P9直接说\"随便跟个票\"，这种态度太危险了！游戏刚开始就放弃思考，这不是给狼人混水摸鱼的机会吗？我强烈建议大家盯着那些不敢表态、不敢站边的人。P3说得对，要多观察，但观察的前提是每个人都要给出明确的立场！我建议所有人今天都必须说清楚：你怀疑谁？为什么？谁要是再划水，我就认定他是狼人！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:51.297236"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(b) 发言: 我强烈认为，各位，我是P2。我先说清楚——P8和P7的发言我都听到了，态度鲜明是好事，但你们俩一唱一和，是不是有点太默契了？我反而更关注P9！游戏刚开始就说“随便跟个票”？这是人话吗？第一天信息少，但脑子不能少！P9，你给我解释清楚，什么叫“随便”？你是不是觉得狼人不需要思考，跟着好人混就行了？还有P3，你说“观察”，但你观察出什么了？别给我模棱两可的答案！我建议，今天所有人必须给出明确的怀疑对象，谁再划水，我就认定他是狼人！P8、P7，你们也别光喊口号，具体说你们怀疑谁？别让我觉得你们是在转移视线！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:34:57.171812"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(e) 发言: 我觉得吧，哇！P2说得太对了！P9你这是什么态度啊？第一天就划水说\"随便跟个票\"？我看你就是狼人想混过去！P8和P7虽然积极，但我也觉得你们俩有点太默契了...不过现在最可疑的还是P9！我强烈建议今天先投P9！谁支持我？大家都要表态啊，别学P9那样划水！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:00.877681"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(d) 发言: 哦，我是P4。大家都说了好多啊，我其实没啥想法。P9划水是挺可疑的，但其他人我也看不出来啥。反正第一...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:03.542257"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(f) 发言: 哦，我是P6。大家都说了好多，我听着头疼。P9划水是挺明显的，P8和P7我也看不出来啥。反正第一天嘛...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:06.737723"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:06.737746"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(b) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:09.320369"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(c) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:13.127529"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(d) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:15.650320"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(e) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:19.053924"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(f) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:21.345110"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(g) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:23.852942"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(h) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:26.428466"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(i) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:30.768625"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P9(i) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:30.768648"
+    },
+    {
+      "day": 2,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:30.768661"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P3",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:33.969796"
+    },
+    {
+      "day": 2,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:36.734056"
+    },
+    {
+      "day": 2,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: c",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:36.734092"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:36.734105"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(b) 发言: 我强烈认为，各位听好！昨晚c死亡，我作为女巫已经救下他。为什么救？因为首夜无人死亡，狼人要么空刀要么刀中我，现在c死亡说明狼人确实在行动。我救c，就是要告诉狼人——你们的刀法我掌控！现在c是银水，谁要是在接下来的发言里踩c，我第一个怀疑你是狼！另外，P9被全票放逐，我怀疑狼人都在冲票。接下来，所有人必须给我明确表态，谁含糊其辞，谁就是我的毒药目标！我女巫带队，谁敢乱",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:44.083687"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(d) 发言: 从逻辑角度分析，P2的发言我听到了，但有几个疑点需要大家思考：第一，首夜无人死亡，狼人可能空刀或刀中女巫，P2自称女巫救下P3，这个信息目前只有他单方面提供；第二，P9被全票放逐，狼人是否真的都在冲票？如果狼人聪明，反而可能分散投票避嫌。我的建议是，先不要急于相信任何身份声明，让每个人依次发言，我们通过想法和矛盾来找出真相。P3作为银水，可以暂时信任，但也要观察他的后续行为。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:48.839085"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(e) 发言: 嗯...大家说的都有道理，我没什么特别的想法。P2说自己是女巫，那就先信着呗。P4的分析也挺厉害，但...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:51.625926"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(f) 发言: 我强烈认为，各位，听我说！P2，你自称女巫救下P3，我暂且不质疑你，但你给我记住——如果你后续逻辑有漏洞，我第一个踩你出局！P4，你分析得头头是道，但“先不要急于倾向于相信”这种话就是废话！游戏里不站边、不表态，你是在等狼人给你送情报吗？P5，你“没什么想法”就是在帮狼人打掩护！我强烈要求——所有人，包括P8，都给我明确说出你们今天要投谁、怀疑谁！谁再含糊其辞，我就当你是狼来打！我P6今天带队，谁敢跟我对着干，我让你看看什么叫真正的压力！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:35:57.166379"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(g) 发言: 我强烈认为，P6说得对！我完全支持你的观点！P4，你那些所谓的“理性分析”听着就像是在给狼人打掩护！首夜无人死亡，P2作为女巫救下P3合情合理，你非要说“单方面信息”？那你倒是说说，如果你是女巫，你该怎么做？是不是该闷声发大财让狼人随便刀？还有，你说狼人可能分散投票避嫌——可笑！P9被全票放逐，狼人要么冲票要么倒钩，你在这里模棱两可，不就是想给狼人留退路吗？我P7今天把话放这儿：P4你这种“理性派”最危险！各位，我们别被这种绕来绕去的逻辑迷惑了，要么站边P2女巫，要么你就是狼！P4，你给我个明确态度，今天你投谁？",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:03.883407"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(h) 发言: 从逻辑角度分析，各位，我来梳理一下目前的信息。P2自称女巫救下P3，这个信息我们暂时只能接受，但需要后续验证。P4提出的质疑确实有逻辑基础——首夜无人死亡确实存在多种可能，狼人空刀或刀中女巫都是合理的假设。但P6和P7的观点也有道理，过度质疑女巫身份确实可能帮狼人制造混乱。\n\n我的建议是：今天先关注谁在刻意制造对立。P6和P7过于急切地站边P2，反而像在打冲锋；P4的质疑虽然理性，但在这个时间点提出，是否在转移焦点？我建议我们先听P3银水的发言，再结合每个人的投票倾向做判断。今天我不会轻易站队，而是观察谁在利用这个局面。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:09.831801"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:09.831821"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(b) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:14.214829"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(d) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:17.175003"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(e) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:20.565151"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(f) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:23.553788"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(g) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:27.891769"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(h) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:31.323077"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P4(d) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:31.323095"
+    },
+    {
+      "day": 3,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:31.323106"
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P5",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:35.444087"
+    },
+    {
+      "day": 3,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: e",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:37.291242"
+    },
+    {
+      "day": 3,
+      "phase": "游戏结束",
+      "type": "GAME_OVER",
+      "content": "游戏结束！胜利者是: 狼人阵营",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-10T15:36:37.291273"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P7",
+      "action_type": "kill",
+      "target": "P1",
+      "timestamp": "2026-06-10T15:34:31.739653",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "check",
+      "target": "P4",
+      "timestamp": "2026-06-10T15:34:37.168208",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:34:41.545389",
+      "reasoning": "我强烈认为，各位好，我是P8。第一天平安夜，要么女巫救了人，要么狼人没刀。但不管怎样，我们得先理清思路。我认为，首轮发言最重要的是观察谁在划水、谁在带节奏。我建议每个人都明确表态：你怀疑谁？为什么？别给我模棱两可的答案。我先说，我会重点关注那些发言模糊、不敢站边的人。游戏刚开始，信息有限，但态度要鲜明。谁想浑水摸鱼，我第一个不答应！"
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:34:44.047683",
+      "reasoning": "哦，P8说得挺多啊，但我没啥想法。第一天嘛，啥信息都没有，划水也挺正常的。我随便跟个票就行了，别问我..."
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:34:47.073857",
+      "reasoning": "我觉得可能，各位好，我是P3。P8的发言确实很积极，但首日信息有限，过于强烈的表态反而让人有些疑虑。P9划水也能理解，毕竟第一天大家都没什么线索。我建议先不急着下结论，多听听其他玩家的发言，看看后续谁的行为逻辑不一致。目前我会保持观察，暂时没有明确的怀疑对象。"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:34:51.297254",
+      "reasoning": "我强烈认为，各位好，我是P7。我完全同意P8的观点！首轮发言就该态度鲜明，不能含糊其辞。但我注意到P9直接说\"随便跟个票\"，这种态度太危险了！游戏刚开始就放弃思考，这不是给狼人混水摸鱼的机会吗？我强烈建议大家盯着那些不敢表态、不敢站边的人。P3说得对，要多观察，但观察的前提是每个人都要给出明确的立场！我建议所有人今天都必须说清楚：你怀疑谁？为什么？谁要是再划水，我就认定他是狼人！"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:34:57.171836",
+      "reasoning": "我强烈认为，各位，我是P2。我先说清楚——P8和P7的发言我都听到了，态度鲜明是好事，但你们俩一唱一和，是不是有点太默契了？我反而更关注P9！游戏刚开始就说“随便跟个票”？这是人话吗？第一天信息少，但脑子不能少！P9，你给我解释清楚，什么叫“随便”？你是不是觉得狼人不需要思考，跟着好人混就行了？还有P3，你说“观察”，但你观察出什么了？别给我模棱两可的答案！我建议，今天所有人必须给出明确的怀疑对象，谁再划水，我就认定他是狼人！P8、P7，你们也别光喊口号，具体说你们怀疑谁？别让我觉得你们是在转移视线！"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:00.877873",
+      "reasoning": "我觉得吧，哇！P2说得太对了！P9你这是什么态度啊？第一天就划水说\"随便跟个票\"？我看你就是狼人想混过去！P8和P7虽然积极，但我也觉得你们俩有点太默契了...不过现在最可疑的还是P9！我强烈建议今天先投P9！谁支持我？大家都要表态啊，别学P9那样划水！"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:03.542269",
+      "reasoning": "哦，我是P4。大家都说了好多啊，我其实没啥想法。P9划水是挺可疑的，但其他人我也看不出来啥。反正第一..."
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:06.737738",
+      "reasoning": "哦，我是P6。大家都说了好多，我听着头疼。P9划水是挺明显的，P8和P7我也看不出来啥。反正第一天嘛..."
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:09.320385",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:13.127537",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:15.650328",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:19.053935",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:21.345126",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:23.852959",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-10T15:35:26.428484",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-10T15:35:30.768635",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "kill",
+      "target": "P3",
+      "timestamp": "2026-06-10T15:35:33.969805",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:44.083705",
+      "reasoning": "我强烈认为，各位听好！昨晚c死亡，我作为女巫已经救下他。为什么救？因为首夜无人死亡，狼人要么空刀要么刀中我，现在c死亡说明狼人确实在行动。我救c，就是要告诉狼人——你们的刀法我掌控！现在c是银水，谁要是在接下来的发言里踩c，我第一个怀疑你是狼！另外，P9被全票放逐，我怀疑狼人都在冲票。接下来，所有人必须给我明确表态，谁含糊其辞，谁就是我的毒药目标！我女巫带队，谁敢乱"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:48.839104",
+      "reasoning": "从逻辑角度分析，P2的发言我听到了，但有几个疑点需要大家思考：第一，首夜无人死亡，狼人可能空刀或刀中女巫，P2自称女巫救下P3，这个信息目前只有他单方面提供；第二，P9被全票放逐，狼人是否真的都在冲票？如果狼人聪明，反而可能分散投票避嫌。我的建议是，先不要急于相信任何身份声明，让每个人依次发言，我们通过想法和矛盾来找出真相。P3作为银水，可以暂时信任，但也要观察他的后续行为。"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:51.625994",
+      "reasoning": "嗯...大家说的都有道理，我没什么特别的想法。P2说自己是女巫，那就先信着呗。P4的分析也挺厉害，但..."
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:35:57.166402",
+      "reasoning": "我强烈认为，各位，听我说！P2，你自称女巫救下P3，我暂且不质疑你，但你给我记住——如果你后续逻辑有漏洞，我第一个踩你出局！P4，你分析得头头是道，但“先不要急于倾向于相信”这种话就是废话！游戏里不站边、不表态，你是在等狼人给你送情报吗？P5，你“没什么想法”就是在帮狼人打掩护！我强烈要求——所有人，包括P8，都给我明确说出你们今天要投谁、怀疑谁！谁再含糊其辞，我就当你是狼来打！我P6今天带队，谁敢跟我对着干，我让你看看什么叫真正的压力！"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:36:03.883418",
+      "reasoning": "我强烈认为，P6说得对！我完全支持你的观点！P4，你那些所谓的“理性分析”听着就像是在给狼人打掩护！首夜无人死亡，P2作为女巫救下P3合情合理，你非要说“单方面信息”？那你倒是说说，如果你是女巫，你该怎么做？是不是该闷声发大财让狼人随便刀？还有，你说狼人可能分散投票避嫌——可笑！P9被全票放逐，狼人要么冲票要么倒钩，你在这里模棱两可，不就是想给狼人留退路吗？我P7今天把话放这儿：P4你这种“理性派”最危险！各位，我们别被这种绕来绕去的逻辑迷惑了，要么站边P2女巫，要么你就是狼！P4，你给我个明确态度，今天你投谁？"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-10T15:36:09.831815",
+      "reasoning": "从逻辑角度分析，各位，我来梳理一下目前的信息。P2自称女巫救下P3，这个信息我们暂时只能接受，但需要后续验证。P4提出的质疑确实有逻辑基础——首夜无人死亡确实存在多种可能，狼人空刀或刀中女巫都是合理的假设。但P6和P7的观点也有道理，过度质疑女巫身份确实可能帮狼人制造混乱。\n\n我的建议是：今天先关注谁在刻意制造对立。P6和P7过于急切地站边P2，反而像在打冲锋；P4的质疑虽然理性，但在这个时间点提出，是否在转移焦点？我建议我们先听P3银水的发言，再结合每个人的投票倾向做判断。今天我不会轻易站队，而是观察谁在利用这个局面。"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-10T15:36:14.214844",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-10T15:36:17.175014",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-10T15:36:20.565159",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-10T15:36:23.553805",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-10T15:36:27.891778",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-10T15:36:31.323085",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "kill",
+      "target": "P5",
+      "timestamp": "2026-06-10T15:36:35.444094",
+      "reasoning": ""
+    }
+  ]
+}

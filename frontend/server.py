@@ -4,6 +4,11 @@ import os
 import sys
 import threading
 from datetime import datetime
+
+# 修复 Windows GBK 编码问题
+if sys.stdout.encoding and sys.stdout.encoding.lower() in ('gbk', 'gb2312', 'cp936'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 from typing import Optional, Dict, List
 from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_cors import CORS
@@ -17,6 +22,9 @@ CORS(app)
 
 # 前端静态文件路径
 FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist')
+# 项目根目录（基于 server.py 自身位置推导，不依赖 CWD）
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
 
 # 游戏状态存储
 current_game: Optional[WerewolfEngine] = None
@@ -44,7 +52,7 @@ def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay
             
             # 创建新游戏引擎
             player_names = ["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"]
-            config = {"step_delay": step_delay}
+            config = {"step_delay": step_delay, "log_dir": LOG_DIR}
             with game_lock:
                 current_game = WerewolfEngine(player_names, config=config, human_player_index=human_player_index)
             print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}, 真人玩家: {human_player_index}")
@@ -184,25 +192,27 @@ def start_game():
         # 使用锁保护访问 current_game 数据
         with game_lock:
             players_data = [{
-                "id": p.id, 
+                "id": p.id,
                 "name": p.name,
                 "role": p.role.value if hasattr(p, 'role') and p.role else None,
                 "is_alive": p.is_alive,
                 "is_human": p.is_human if hasattr(p, 'is_human') else False
             } for p in current_game.state.players.values()]
-            
+
             game_id = current_game.state.game_id
             day = current_game.state.day
             phase = current_game.state.phase.value
-        
+            start_time = current_game.state.start_time
+
         print(f"[API] 游戏初始化成功，返回数据：{game_id}")
-        
+
         return jsonify({
             "success": True,
             "game_id": game_id,
             "players": players_data,
             "day": day,
-            "phase": phase
+            "phase": phase,
+            "start_time": start_time.isoformat() if start_time else None
         })
     
     except Exception as e:
@@ -282,7 +292,8 @@ def get_game_state(game_id: str):
             "logs": logs,
             "vote_results": getattr(state, 'vote_results', []),
             "is_over": state.phase.value == "GAME_OVER",
-            "human_pending_action": human_pending
+            "human_pending_action": human_pending,
+            "start_time": state.start_time.isoformat() if state.start_time else None
         })
     
     print(f"[API] 游戏状态未找到：{game_id}")
@@ -375,16 +386,45 @@ def submit_human_action(game_id: str):
         return jsonify({"error": "No pending human action or game not waiting", "code": "NO_PENDING"}), 400
 
 
+@app.route('/api/game/stop', methods=['POST'])
+def stop_game():
+    """停止当前正在运行的游戏的接口"""
+    global current_game, game_running
+
+    if not game_running:
+        return jsonify({"success": True, "message": "当前没有游戏在运行"})
+
+    with game_lock:
+        if current_game and hasattr(current_game, 'request_stop'):
+            print("[API] 发送停止请求到游戏引擎...")
+            current_game.request_stop()
+
+    # 等待游戏线程结束（最多 5 秒）
+    for _ in range(50):
+        if not game_running:
+            break
+        import time
+        time.sleep(0.1)
+
+    print(f"[API] 游戏已停止, game_running={game_running}")
+    return jsonify({"success": True, "message": "游戏已终止"})
+
+
 @app.route('/api/health')
 def health_check():
     """健康检查端点"""
     global game_running, current_game, game_init_error
-    
+
+    game_id = None
+    if current_game and current_game.state:
+        game_id = current_game.state.game_id
+
     return jsonify({
         "status": "ok",
         "timestamp": datetime.now().isoformat(),
         "game": {
             "running": game_running,
+            "game_id": game_id,
             "has_game": current_game is not None,
             "has_state": current_game.state is not None if current_game else False,
             "error": game_init_error
@@ -396,12 +436,11 @@ def health_check():
 def get_game_history():
     """获取游戏历史记录"""
     history = []
-    log_dir = 'logs'
-    if os.path.exists(log_dir):
-        for filename in sorted(os.listdir(log_dir), reverse=True)[:20]:
+    if os.path.exists(LOG_DIR):
+        for filename in sorted(os.listdir(LOG_DIR), reverse=True)[:20]:
             if filename.endswith('.json'):
                 try:
-                    with open(os.path.join(log_dir, filename), 'r', encoding='utf-8') as f:
+                    with open(os.path.join(LOG_DIR, filename), 'r', encoding='utf-8') as f:
                         data = json.load(f)
                         history.append({
                             "game_id": data.get("game_id", filename),
@@ -419,7 +458,7 @@ def get_game_history():
 @app.route('/api/game/replay/<filename>')
 def get_game_replay(filename: str):
     """获取游戏回放数据"""
-    log_path = os.path.join('logs', filename)
+    log_path = os.path.join(LOG_DIR, filename)
     if os.path.exists(log_path):
         with open(log_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -429,19 +468,58 @@ def get_game_replay(filename: str):
 
 @app.route('/api/leaderboard')
 def get_leaderboard():
-    """获取排行榜"""
+    """获取排行榜 - 从历史游戏记录中统计"""
     try:
-        from leaderboard.leaderboard import Leaderboard
-        lb = Leaderboard()
-        top_players = lb.get_overall_leaderboard()
-        return jsonify([{
-            "rank": i+1,
-            "name": entry.name,
-            "role": entry.role,
-            "total_games": entry.total_games,
-            "wins": entry.wins,
-            "win_rate": entry.win_rate
-        } for i, entry in enumerate(top_players[:10])])
+        player_stats = {}
+
+        if not os.path.exists(LOG_DIR):
+            return jsonify([])
+
+        for filename in os.listdir(LOG_DIR):
+            if not filename.endswith('.json'):
+                continue
+            try:
+                with open(os.path.join(LOG_DIR, filename), 'r', encoding='utf-8') as f:
+                    game = json.load(f)
+            except:
+                continue
+
+            winner = game.get('winner')
+            players = game.get('players', {})
+
+            for pid, pdata in players.items():
+                name = pdata.get('name', pid)
+                role = pdata.get('role', '未知')
+
+                if name not in player_stats:
+                    player_stats[name] = {'total_games': 0, 'wins': 0, 'roles': {}}
+
+                player_stats[name]['total_games'] += 1
+                player_stats[name]['roles'][role] = player_stats[name]['roles'].get(role, 0) + 1
+
+                is_wolf = (role == '狼人')
+                if (is_wolf and winner == '狼人阵营') or (not is_wolf and winner == '好人阵营'):
+                    player_stats[name]['wins'] += 1
+
+        leaderboard = []
+        for name, stats in player_stats.items():
+            main_role = max(stats['roles'], key=stats['roles'].get)
+            win_rate = (stats['wins'] / stats['total_games']) * 100 if stats['total_games'] > 0 else 0
+            leaderboard.append({
+                'name': name,
+                'role': main_role,
+                'total_games': stats['total_games'],
+                'wins': stats['wins'],
+                'win_rate': round(win_rate, 1)
+            })
+
+        # 按胜率排序
+        leaderboard.sort(key=lambda x: x['win_rate'], reverse=True)
+        for i, entry in enumerate(leaderboard):
+            entry['rank'] = i + 1
+
+        return jsonify(leaderboard[:10])
+
     except Exception as e:
         print(f"[Leaderboard] Error: {e}")
         return jsonify([])

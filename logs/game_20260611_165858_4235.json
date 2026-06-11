@@ -1,0 +1,941 @@
+{
+  "game_id": "game_20260611_165858_4235",
+  "start_time": "2026-06-11T16:58:58.056691",
+  "end_time": "2026-06-11T16:58:58.064993",
+  "winner": "狼人阵营",
+  "days": 3,
+  "players": {
+    "P1": {
+      "name": "小刚",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P2": {
+      "name": "小红",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P3": {
+      "name": "小明",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P4": {
+      "name": "小李",
+      "role": "预言家",
+      "is_alive": true
+    },
+    "P5": {
+      "name": "张三",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P6": {
+      "name": "李四",
+      "role": "女巫",
+      "is_alive": false
+    },
+    "P7": {
+      "name": "王五",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P8": {
+      "name": "赵六",
+      "role": "猎人",
+      "is_alive": false
+    },
+    "P9": {
+      "name": "孙七",
+      "role": "平民",
+      "is_alive": false
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(小刚) 底牌: 狼人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056717"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(小红) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056749"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(小明) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056767"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(小李) 底牌: 预言家",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056785"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(张三) 底牌: 狼人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056804"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(李四) 底牌: 女巫",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056824"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(王五) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056869"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(赵六) 底牌: 猎人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056894"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(孙七) 底牌: 平民",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056919"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056944"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.056991"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P6",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.057177"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P2 结果: 好人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058459"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058527"
+    },
+    {
+      "day": 1,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 李四",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058587"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058637"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "INFO",
+      "content": "首轮发言随机顺序: P9,P5,P1,P2,P4,P3,P7,P8",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058688"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058835"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.058966"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P1(小刚) 发言: 我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059087"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059208"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(小李) 发言: 我是预言家，昨晚查验了一名玩家身份。今天请大家跟我走。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059320"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059429"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(王五) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059540"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(赵六) 发言: 我是猎人，如果被放逐我会开枪带走可疑的人。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059654"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059702"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059830"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.059954"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060078"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060229"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060364"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) 投票给 P3",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060492"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(赵六) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060622"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060753"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P9(孙七) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060822"
+    },
+    {
+      "day": 2,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.060894"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P8",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061032"
+    },
+    {
+      "day": 2,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P2 结果: 好人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061178"
+    },
+    {
+      "day": 2,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061252"
+    },
+    {
+      "day": 2,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 赵六",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061329"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061402"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P1(小刚) 发言: 我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061537"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061672"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061808"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(小李) 发言: 我是预言家，昨晚查验了一名玩家身份。今天请大家跟我走。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.061955"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062100"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(王五) 发言: 我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062257"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062334"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) 投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062484"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062635"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P2",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062786"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.062935"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P2",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063086"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) 投票给 P3",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063233"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "PK",
+      "content": "平票！进入第1轮PK: P1,P2",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063324"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) PK投票给 P3",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063470"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) PK投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063610"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) PK投票给 P5",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063750"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) PK投票给 P2",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.063898"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) PK投票给 P2",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064124"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) PK投票给 P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064291"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P2(小红) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064383"
+    },
+    {
+      "day": 3,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064474"
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P7",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064625"
+    },
+    {
+      "day": 3,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P7 结果: 好人",
+      "hidden": true,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064788"
+    },
+    {
+      "day": 3,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 王五",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064896"
+    },
+    {
+      "day": 3,
+      "phase": "游戏结束",
+      "type": "GAME_OVER",
+      "content": "游戏结束！胜利者是: 狼人阵营",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T16:58:58.064996"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P1",
+      "action_type": "kill",
+      "target": "P6",
+      "timestamp": "2026-06-11T16:58:58.057213",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "check",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.058509",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.058878",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059009",
+      "reasoning": "我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059130",
+      "reasoning": "我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059247",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059360",
+      "reasoning": "我是预言家，昨晚查验了一名玩家身份。今天请大家跟我走。"
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059471",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059583",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.059698",
+      "reasoning": "我是猎人，如果被放逐我会开枪带走可疑的人。"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-11T16:58:58.059877",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T16:58:58.060004",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-11T16:58:58.060129",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-11T16:58:58.060284",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T16:58:58.060418",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P3",
+      "timestamp": "2026-06-11T16:58:58.060546",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-11T16:58:58.060677",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T16:58:58.060809",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "kill",
+      "target": "P8",
+      "timestamp": "2026-06-11T16:58:58.061093",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "check",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.061242",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.061603",
+      "reasoning": "我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.061738",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.061881",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.062024",
+      "reasoning": "我是预言家，昨晚查验了一名玩家身份。今天请大家跟我走。"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.062170",
+      "reasoning": "我是好人身份，昨晚平安度过。刚才有些玩家的发言很可疑。"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T16:58:58.062330",
+      "reasoning": "我是平民，昨晚没有任何信息。根据刚才的发言，我觉得需要再观察一下。"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-11T16:58:58.062558",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T16:58:58.062711",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.062862",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T16:58:58.063013",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.063162",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P3",
+      "timestamp": "2026-06-11T16:58:58.063311",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "P3",
+      "timestamp": "2026-06-11T16:58:58.063547",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-11T16:58:58.063688",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P5",
+      "timestamp": "2026-06-11T16:58:58.063831",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.063978",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P2",
+      "timestamp": "2026-06-11T16:58:58.064220",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P4",
+      "timestamp": "2026-06-11T16:58:58.064374",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "kill",
+      "target": "P7",
+      "timestamp": "2026-06-11T16:58:58.064711",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "check",
+      "target": "P7",
+      "timestamp": "2026-06-11T16:58:58.064878",
+      "reasoning": ""
+    }
+  ]
+}

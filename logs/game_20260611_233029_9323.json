@@ -1,0 +1,1150 @@
+{
+  "game_id": "game_20260611_233029_9323",
+  "start_time": "2026-06-11T23:30:32.662637",
+  "end_time": "2026-06-11T23:33:29.893817",
+  "winner": "游戏被终止",
+  "days": 4,
+  "players": {
+    "P1": {
+      "name": "小刚",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P2": {
+      "name": "小红",
+      "role": "女巫",
+      "is_alive": true
+    },
+    "P3": {
+      "name": "小明",
+      "role": "猎人",
+      "is_alive": true
+    },
+    "P4": {
+      "name": "小李",
+      "role": "预言家",
+      "is_alive": false
+    },
+    "P5": {
+      "name": "张三",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P6": {
+      "name": "李四",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P7": {
+      "name": "王五",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P8": {
+      "name": "赵六",
+      "role": "平民",
+      "is_alive": false
+    },
+    "P9": {
+      "name": "孙七",
+      "role": "狼人",
+      "is_alive": false
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(小刚) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:30:32.662660"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(小红) 底牌: 女巫",
+      "hidden": true,
+      "player_id": "P2",
+      "timestamp": "2026-06-11T23:30:32.662682"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(小明) 底牌: 猎人",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:30:32.662694"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(小李) 底牌: 预言家",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:30:32.662705"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(张三) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:30:32.662716"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(李四) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P6",
+      "timestamp": "2026-06-11T23:30:32.662729"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(王五) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T23:30:32.662741"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(赵六) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P8",
+      "timestamp": "2026-06-11T23:30:32.662754"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(孙七) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:30:32.662768"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:32.662783"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:32.877766"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P5(张三) [狼群密语]: 哎呀我有点紧张！我感觉P1和P8看起来不太对劲，要不咱们先杀P1吧？听大家的！",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:30:34.564199"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P9(孙七) [狼群密语]: 哎呀好激动啊，咱们今晚先杀谁？我看那个P1发言挺稳的，要不先把他干掉？",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:30:35.812790"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P1",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:30:38.459249"
+    },
+    {
+      "day": 1,
+      "phase": "女巫行动",
+      "type": "ACTION",
+      "content": "女巫使用了解药",
+      "hidden": true,
+      "player_id": "P2",
+      "timestamp": "2026-06-11T23:30:40.714670"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P1 结果: 好人",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:30:43.540938"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:30:43.755804"
+    },
+    {
+      "day": 1,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 平安夜",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:43.957527"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:44.160761"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "INFO",
+      "content": "首轮发言随机顺序: P1,P8,P7,P9,P5,P6,P3,P2,P4",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:44.361039"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P1(小刚) 发言: 我觉得吧，哇，平安夜！大家都没死，太好了！我是P1小刚，第一个发言有点紧张啊。我觉得吧，平安夜可能是女巫救了人，也可能是狼人没刀人？不过狼人应该不会空刀吧？算了算了，我也不知道该说啥。反正我就跟着大家走，谁说得有道理我就信谁！大家加油啊，我们好人可能要赢！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:47.932030"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(赵六) 发言: 我觉得可能，大家好，我是P8赵六。平安夜是个好开局，但信息有限。P1的发言比较轻松，可能是真好人放松心态，但也不排除刻意伪装。我觉得现在下结论为时过早，还是多听听大家的发言，积累信息再做判断。感谢女巫或守卫的守护，我们继续观察。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:51.639247"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P7(王五) 发言: 我强烈认为，\n各位，我是P7王五，我先说一句——平安夜不代表安全！恰恰相反，这可能是狼人精心设计的沉默陷阱！P1小刚，你第一个发言就摆出一副“我啥都不知道，跟着大家走”的姿态，这太轻松了吧？你是不是想用这种无害形象混过去？还有P8赵六，你表面中立，但这么快就替P1找补，说“可能是真好人放松心态”，你俩是不是提前约好的？我建议今天大家都别含糊，给我盯着P1和P8多提问！谁先怂谁就有问题！好人要有血性，别当软柿子！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:30:56.255918"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 我强烈认为，我是P9孙七，说句实在话，P7王五你太激动了！平安夜就急着给P1和P8扣帽子，这反应才不正常吧？一个真好人会这么急着拉对立面？我看你是在转移视线！P1小刚第一个发言紧张很正常，P8赵六分析也合情合理。反倒是你P7，一上来就煽风点火，这发言节奏太像狼人带节奏了！我建议今天重点听听P7的解释，别让他这么轻易混过去。好人们，别被情绪带偏了，冷静想想谁在制造混乱！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:01.243721"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 我是P5张三，啊，平安夜啊，挺好。P7和P9你们俩吵得挺热闹的，我听着头晕。反正我没什么想法，你们说...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:04.266136"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(李四) 发言: 我是P6李四，嗯，平安夜挺好的。P7和P9你们说的我都没太听明白，太复杂了。我就随便跟个票吧，大家说...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:06.784384"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 我觉得吧，哇，大家好我是P3小明！平安夜嘛，大家都没事，但P7和P9你们俩吵得好凶啊！我听着都紧张了。P7你一开始就骂P1和P8，是不是有点太急了？但P9你反过来说P7是狼，也让我有点懵...哎呀，我也不知道该信谁！反正我就觉得，P1小刚看起来挺老实的，P8赵六说话也挺稳的。我可能...可能更偏向P9一点？因为P7太激动了，像在带节奏！但我也说不准，大家说啥我就跟啥吧！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:11.961055"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 我觉得可能，大家好，我是P2小红。平安夜确实信息有限，大家各有各的看法。P7一开始就急着给P1和P8扣帽子，确实有点激进；但P9立刻反击说P7是狼，也略显急躁。P1和P8的发言比较平稳，但也不能完全排除伪装的可能性。目前局势还不明朗，我觉得现在下结论为时过早。建议大家冷静观察，多听几轮发言再做判断。我暂时没有明确的怀疑对象，先听听后面几位怎么说。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:15.932323"
+    },
+    {
+      "day": 1,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P4(小李) 发言: 从逻辑角度分析，大家好，我是P4小李。平安夜确实信息有限，但P7和P9的激烈对立值得关注。P7一上来就攻击P1和P8，节奏偏快，而P9立刻反击，双方都缺乏实据。P5、P6、P3的发言偏模糊，暂时无法判断。我认为目前最理性的做法是不要急于下结论，多听几轮发言积累信息。建议今天先观望，避免误伤好人。我会重点关注P7和P9后续的发言想法是否自洽。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:20.009773"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:20.144527"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:23.129483"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:25.096412"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:28.271603"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P4(小李) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:31.638462"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:34.097882"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(李四) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:36.903937"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P7(王五) 投票给 P3",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:40.294689"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(赵六) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:41.999222"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 P7",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:44.288016"
+    },
+    {
+      "day": 1,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P7(王五) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:44.288063"
+    },
+    {
+      "day": 2,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:44.497817"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P5(张三) [狼群密语]: 杀王五的节奏这么快，随便吧，听你们的，我跟着投。",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:31:46.502072"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P9(孙七) [狼群密语]: 心声：完了完了，我跟着投了P7，结果他是好人被投出去了！现在肯定被人怀疑了，得赶紧跟队友商量对策。\n\n表现：慌张，语速快，情绪激动\n\n行动：兄弟们，咱今晚杀谁啊？我觉得那个带节奏投P7的P2很可疑，要不就干他？",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:31:48.623662"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P4",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:31:52.397238"
+    },
+    {
+      "day": 2,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P3 结果: 好人",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:31:58.965654"
+    },
+    {
+      "day": 2,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:31:59.170371"
+    },
+    {
+      "day": 2,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 小李",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:59.373728"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:31:59.578570"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P1(小刚) 发言: 我强烈认为，兄弟们，听我说！昨晚小李死了，这刀法很精准，大概率是狼人刀了关键神职。我们看看昨天的投票，P7王五被放逐，但P4小李投了P7，现在小李死了，P4有没有可能是狼人自刀做身份？再看P5、P6、P8、P9，你们四个整齐划一投P7，这票型太完美了，完美得让我觉得有问题！我不信狼人会在第一天集体冲票，除非P7真的是狼队友被卖。我建议今天从P5或P9入手，他们的发言和投票需要给个合理解释。别怕冲突，我们要敢于质疑！谁敢接话，谁就是心虚！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:04.795921"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 嗯...小李死了啊，挺可惜的。小刚说得挺多，但我没啥想法。昨天投票我也没注意看，反正跟着大家走吧。今...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:07.695617"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 我觉得吧，哎呀，昨晚小李死了，我好慌啊！小刚说得对，P5、P6、P8、P9昨天都投了P7，这票型整齐得吓人！我昨天也投了P7，但我就是个平民，怕死才跟风的。P5和P9，你们俩能不能解释一下为啥也投那么一致？是不是狼人在抱团冲票？我觉得小刚挺靠谱的，咱们今天就从P5或者P9里选一个投吧！别让狼人跑了啊！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:12.233868"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 从逻辑角度分析，大家好，我是P5张三。小刚和小明的发言我仔细听了，但有几个逻辑问题想和大家探讨。第一，昨天P7被放逐，P4小李投了P7后被杀，小刚据此怀疑P4是狼人自刀——但自刀做身份通常是为了救队友，P7已经被放逐，自刀毫无收益，反而浪费一刀。第二，小刚说P5、P6、P8、P9投票整齐有问题，但当时P7明显是焦点，好人跟风投票是正常行为，反而小刚和小明现在跳出来质疑票型，更像是想找借口推人。第三，小明说自己“怕死才跟风”，但狼人才最怕暴露，好人跟风是常态。我建议今天先听P6、P8、P9的发言，不要急着下定论。小刚的质疑动机值得深思。",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:18.350577"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(李四) 发言: 我觉得吧，哎呀，我昨天确实投了P7，但我就是个平民啊！当时大家都投他，我哪敢不跟？小刚你说我们票型整齐有问题，可你和小明不也投了P7吗？现在跳出来质疑我们，是不是想转移视线？P5说得对，狼人自刀救死人根本没收益，小刚你这话逻辑不通啊！我强烈支持P5的分析，今天不如看看小刚和小明，他们俩一唱一和的，反而更像在带节奏！别冲动啊兄弟们，咱们得冷静点！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:23.240051"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P8(赵六) 发言: 我强烈认为，兄弟们，听我说！小刚，你质疑我们票型整齐，可你和小明昨天不也投了P7？现在跳出来带节奏，是不是想转移视线？P5的想法一针见血——你说P4自刀做身份，可P7都出局了，自刀救死人？这想法狗屁不通！你和小明一唱一和，摆明了在找抗推位！我建议今天直接投小刚，别让狼人继续带偏节奏！P5、P6，咱们一起上，今天就送小刚出局！谁敢保小刚，谁就是狼队友！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:28.786087"
+    },
+    {
+      "day": 2,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 呃...我觉得P5和P6说得挺对的，小刚那个自刀逻辑确实有点扯。昨天投P7我就是看大家都投，我也跟着...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:32.288894"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:32.421125"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P1(小刚) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:35.412965"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:38.580477"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:41.306726"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:44.141213"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(李四) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:46.111803"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P8(赵六) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:49.433517"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 P1",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:51.444836"
+    },
+    {
+      "day": 2,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P1(小刚) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:51.444900"
+    },
+    {
+      "day": 3,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:32:51.656056"
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P5(张三) [狼群密语]: 杀P6李四吧，他投票表态太干净了，这种理性玩家留着是隐患。",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:32:53.102082"
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P9(孙七) [狼群密语]: 兄弟们，P1出局了，现在局势在我们掌控中。我建议今晚刀P2，她带头投票太积极，可能是女巫。",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:32:54.490890"
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P8",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:32:58.152476"
+    },
+    {
+      "day": 3,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:33:00.880413"
+    },
+    {
+      "day": 3,
+      "phase": "天亮请睁眼",
+      "type": "ANNOUNCE",
+      "content": "昨晚死亡: 赵六",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:01.084758"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "DISCUSS_START",
+      "content": "进入自由发言阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:01.286285"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P2(小红) 发言: 我强烈认为，各位，听我说！赵六昨晚死了，这说明什么？狼人刀了他，而不是我或者其他玩家。我怀疑赵六可能是好人，甚至可能是关键身份，狼人怕他留到最后。现在活着的是我们五个，P1被全票放逐，但狼人可能在P3、P5、P6、P9中间。我建议每个人都必须明确表态：你对P1的死怎么看？你对昨晚赵六的死有什么想法？别给我打马虎眼，我要看到你们的真实态度！谁发言含糊，谁就有问题！我带头，我先说：P1被放逐，我认他大概率是狼，但狼队可能趁机踩他做身份。现在，我们要找出那个隐藏的狼，别让局势失控！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:07.292902"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P3(小明) 发言: 我觉得吧，哎呀，小红说得对！P1可能是个狼，全票放逐没毛病！赵六死了，我猜他可能是好人，狼人怕他才刀他。现在剩我们五个，我跟着小红走，谁含糊谁就是狼！P5、P6、P9，你们快表态，别磨叽！我反正信小红，大家团结点，把狼揪出来！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:11.627201"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P5(张三) 发言: 哎呀，小红说得对，P1可能是狼，赵六死了挺可惜的。我没什么想法，就跟着大家走吧。反正谁可疑就投谁，别...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:14.139778"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P6(李四) 发言: 嗯，小红和小明说得对，我也没啥想法。P1被全票放逐，应该就是狼吧。赵六死了，挺可惜的。我就跟着大家投...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:16.786626"
+    },
+    {
+      "day": 3,
+      "phase": "自由发言",
+      "type": "SPEECH",
+      "content": "P9(孙七) 发言: 我强烈认为，各位，听我说！小红，你太急了！P1被全票放逐，你立刻跳出来带节奏，这不像好人的做法——好人应该谨慎分析，而不是急着给结论。你说赵六可能是关键身份，但凭什么？你凭什么认为？我看你是在转移视线！P3、P5、P6，你们别被小红牵着鼻子走，她这么强势，难道不像是狼人在带节奏吗？我建议，今天我们先别急着跟小红走，而是好好分析一下：为什么小红这么急着要我们表态？她是不是在掩盖什么？我孙七今天就要质疑小红，谁支持我，谁就跟我一起看清真相！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:21.968722"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE_START",
+      "content": "进入放逐投票阶段",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:22.100925"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P2(小红) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:25.121041"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P3(小明) 投票给 P9",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:27.548548"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P5(张三) 投票给 P3",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:29.685287"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P6(李四) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:29.685462"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "VOTE",
+      "content": "P9(孙七) 投票给 PASS",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:29.685569"
+    },
+    {
+      "day": 3,
+      "phase": "放逐投票",
+      "type": "LYNCH",
+      "content": "P9(孙七) 被放逐",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:29.685676"
+    },
+    {
+      "day": 4,
+      "phase": "放逐投票",
+      "type": "GAME_STOP",
+      "content": "游戏被手动终止",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:33:29.893642"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P5",
+      "action_type": "kill",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:30:38.459281",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "save",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:30:40.714699",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "check",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:30:43.540963",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:30:47.932058",
+      "reasoning": "我觉得吧，哇，平安夜！大家都没死，太好了！我是P1小刚，第一个发言有点紧张啊。我觉得吧，平安夜可能是女巫救了人，也可能是狼人没刀人？不过狼人应该不会空刀吧？算了算了，我也不知道该说啥。反正我就跟着大家走，谁说得有道理我就信谁！大家加油啊，我们好人可能要赢！"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:30:51.639278",
+      "reasoning": "我觉得可能，大家好，我是P8赵六。平安夜是个好开局，但信息有限。P1的发言比较轻松，可能是真好人放松心态，但也不排除刻意伪装。我觉得现在下结论为时过早，还是多听听大家的发言，积累信息再做判断。感谢女巫或守卫的守护，我们继续观察。"
+    },
+    {
+      "player_id": "P7",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:30:56.255953",
+      "reasoning": "我强烈认为，\n各位，我是P7王五，我先说一句——平安夜不代表安全！恰恰相反，这可能是狼人精心设计的沉默陷阱！P1小刚，你第一个发言就摆出一副“我啥都不知道，跟着大家走”的姿态，这太轻松了吧？你是不是想用这种无害形象混过去？还有P8赵六，你表面中立，但这么快就替P1找补，说“可能是真好人放松心态”，你俩是不是提前约好的？我建议今天大家都别含糊，给我盯着P1和P8多提问！谁先怂谁就有问题！好人要有血性，别当软柿子！"
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:01.243753",
+      "reasoning": "我强烈认为，我是P9孙七，说句实在话，P7王五你太激动了！平安夜就急着给P1和P8扣帽子，这反应才不正常吧？一个真好人会这么急着拉对立面？我看你是在转移视线！P1小刚第一个发言紧张很正常，P8赵六分析也合情合理。反倒是你P7，一上来就煽风点火，这发言节奏太像狼人带节奏了！我建议今天重点听听P7的解释，别让他这么轻易混过去。好人们，别被情绪带偏了，冷静想想谁在制造混乱！"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:04.266165",
+      "reasoning": "我是P5张三，啊，平安夜啊，挺好。P7和P9你们俩吵得挺热闹的，我听着头晕。反正我没什么想法，你们说..."
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:06.784418",
+      "reasoning": "我是P6李四，嗯，平安夜挺好的。P7和P9你们说的我都没太听明白，太复杂了。我就随便跟个票吧，大家说..."
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:11.961084",
+      "reasoning": "我觉得吧，哇，大家好我是P3小明！平安夜嘛，大家都没事，但P7和P9你们俩吵得好凶啊！我听着都紧张了。P7你一开始就骂P1和P8，是不是有点太急了？但P9你反过来说P7是狼，也让我有点懵...哎呀，我也不知道该信谁！反正我就觉得，P1小刚看起来挺老实的，P8赵六说话也挺稳的。我可能...可能更偏向P9一点？因为P7太激动了，像在带节奏！但我也说不准，大家说啥我就跟啥吧！"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:15.932354",
+      "reasoning": "我觉得可能，大家好，我是P2小红。平安夜确实信息有限，大家各有各的看法。P7一开始就急着给P1和P8扣帽子，确实有点激进；但P9立刻反击说P7是狼，也略显急躁。P1和P8的发言比较平稳，但也不能完全排除伪装的可能性。目前局势还不明朗，我觉得现在下结论为时过早。建议大家冷静观察，多听几轮发言再做判断。我暂时没有明确的怀疑对象，先听听后面几位怎么说。"
+    },
+    {
+      "player_id": "P4",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:31:20.009805",
+      "reasoning": "从逻辑角度分析，大家好，我是P4小李。平安夜确实信息有限，但P7和P9的激烈对立值得关注。P7一上来就攻击P1和P8，节奏偏快，而P9立刻反击，双方都缺乏实据。P5、P6、P3的发言偏模糊，暂时无法判断。我认为目前最理性的做法是不要急于下结论，多听几轮发言积累信息。建议今天先观望，避免误伤好人。我会重点关注P7和P9后续的发言想法是否自洽。"
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:23.129518",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:25.096454",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:28.271636",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:31.638500",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:34.097914",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:36.903971",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P7",
+      "action_type": "vote",
+      "target": "P3",
+      "timestamp": "2026-06-11T23:31:40.294724",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:41.999262",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "P7",
+      "timestamp": "2026-06-11T23:31:44.288052",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "kill",
+      "target": "P4",
+      "timestamp": "2026-06-11T23:31:52.397282",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P4",
+      "action_type": "check",
+      "target": "P3",
+      "timestamp": "2026-06-11T23:31:58.965700",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P1",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:04.795983",
+      "reasoning": "我强烈认为，兄弟们，听我说！昨晚小李死了，这刀法很精准，大概率是狼人刀了关键神职。我们看看昨天的投票，P7王五被放逐，但P4小李投了P7，现在小李死了，P4有没有可能是狼人自刀做身份？再看P5、P6、P8、P9，你们四个整齐划一投P7，这票型太完美了，完美得让我觉得有问题！我不信狼人会在第一天集体冲票，除非P7真的是狼队友被卖。我建议今天从P5或P9入手，他们的发言和投票需要给个合理解释。别怕冲突，我们要敢于质疑！谁敢接话，谁就是心虚！"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:07.695667",
+      "reasoning": "嗯...小李死了啊，挺可惜的。小刚说得挺多，但我没啥想法。昨天投票我也没注意看，反正跟着大家走吧。今..."
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:12.233923",
+      "reasoning": "我觉得吧，哎呀，昨晚小李死了，我好慌啊！小刚说得对，P5、P6、P8、P9昨天都投了P7，这票型整齐得吓人！我昨天也投了P7，但我就是个平民，怕死才跟风的。P5和P9，你们俩能不能解释一下为啥也投那么一致？是不是狼人在抱团冲票？我觉得小刚挺靠谱的，咱们今天就从P5或者P9里选一个投吧！别让狼人跑了啊！"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:18.350751",
+      "reasoning": "从逻辑角度分析，大家好，我是P5张三。小刚和小明的发言我仔细听了，但有几个逻辑问题想和大家探讨。第一，昨天P7被放逐，P4小李投了P7后被杀，小刚据此怀疑P4是狼人自刀——但自刀做身份通常是为了救队友，P7已经被放逐，自刀毫无收益，反而浪费一刀。第二，小刚说P5、P6、P8、P9投票整齐有问题，但当时P7明显是焦点，好人跟风投票是正常行为，反而小刚和小明现在跳出来质疑票型，更像是想找借口推人。第三，小明说自己“怕死才跟风”，但狼人才最怕暴露，好人跟风是常态。我建议今天先听P6、P8、P9的发言，不要急着下定论。小刚的质疑动机值得深思。"
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:23.240100",
+      "reasoning": "我觉得吧，哎呀，我昨天确实投了P7，但我就是个平民啊！当时大家都投他，我哪敢不跟？小刚你说我们票型整齐有问题，可你和小明不也投了P7吗？现在跳出来质疑我们，是不是想转移视线？P5说得对，狼人自刀救死人根本没收益，小刚你这话逻辑不通啊！我强烈支持P5的分析，今天不如看看小刚和小明，他们俩一唱一和的，反而更像在带节奏！别冲动啊兄弟们，咱们得冷静点！"
+    },
+    {
+      "player_id": "P8",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:28.786134",
+      "reasoning": "我强烈认为，兄弟们，听我说！小刚，你质疑我们票型整齐，可你和小明昨天不也投了P7？现在跳出来带节奏，是不是想转移视线？P5的想法一针见血——你说P4自刀做身份，可P7都出局了，自刀救死人？这想法狗屁不通！你和小明一唱一和，摆明了在找抗推位！我建议今天直接投小刚，别让狼人继续带偏节奏！P5、P6，咱们一起上，今天就送小刚出局！谁敢保小刚，谁就是狼队友！"
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:32:32.288948",
+      "reasoning": "呃...我觉得P5和P6说得挺对的，小刚那个自刀逻辑确实有点扯。昨天投P7我就是看大家都投，我也跟着..."
+    },
+    {
+      "player_id": "P1",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:32:35.413018",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:38.580526",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:41.306786",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:44.141271",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:46.111857",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P8",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:49.433566",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:32:51.444889",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "kill",
+      "target": "P8",
+      "timestamp": "2026-06-11T23:32:58.152532",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P2",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:33:07.293025",
+      "reasoning": "我强烈认为，各位，听我说！赵六昨晚死了，这说明什么？狼人刀了他，而不是我或者其他玩家。我怀疑赵六可能是好人，甚至可能是关键身份，狼人怕他留到最后。现在活着的是我们五个，P1被全票放逐，但狼人可能在P3、P5、P6、P9中间。我建议每个人都必须明确表态：你对P1的死怎么看？你对昨晚赵六的死有什么想法？别给我打马虎眼，我要看到你们的真实态度！谁发言含糊，谁就有问题！我带头，我先说：P1被放逐，我认他大概率是狼，但狼队可能趁机踩他做身份。现在，我们要找出那个隐藏的狼，别让局势失控！"
+    },
+    {
+      "player_id": "P3",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:33:11.627364",
+      "reasoning": "我觉得吧，哎呀，小红说得对！P1可能是个狼，全票放逐没毛病！赵六死了，我猜他可能是好人，狼人怕他才刀他。现在剩我们五个，我跟着小红走，谁含糊谁就是狼！P5、P6、P9，你们快表态，别磨叽！我反正信小红，大家团结点，把狼揪出来！"
+    },
+    {
+      "player_id": "P5",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:33:14.139890",
+      "reasoning": "哎呀，小红说得对，P1可能是狼，赵六死了挺可惜的。我没什么想法，就跟着大家走吧。反正谁可疑就投谁，别..."
+    },
+    {
+      "player_id": "P6",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:33:16.786726",
+      "reasoning": "嗯，小红和小明说得对，我也没啥想法。P1被全票放逐，应该就是狼吧。赵六死了，挺可惜的。我就跟着大家投..."
+    },
+    {
+      "player_id": "P9",
+      "action_type": "speak",
+      "target": null,
+      "timestamp": "2026-06-11T23:33:21.968783",
+      "reasoning": "我强烈认为，各位，听我说！小红，你太急了！P1被全票放逐，你立刻跳出来带节奏，这不像好人的做法——好人应该谨慎分析，而不是急着给结论。你说赵六可能是关键身份，但凭什么？你凭什么认为？我看你是在转移视线！P3、P5、P6，你们别被小红牵着鼻子走，她这么强势，难道不像是狼人在带节奏吗？我建议，今天我们先别急着跟小红走，而是好好分析一下：为什么小红这么急着要我们表态？她是不是在掩盖什么？我孙七今天就要质疑小红，谁支持我，谁就跟我一起看清真相！"
+    },
+    {
+      "player_id": "P2",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-11T23:33:25.121102",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "vote",
+      "target": "P9",
+      "timestamp": "2026-06-11T23:33:27.548671",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P5",
+      "action_type": "vote",
+      "target": "P3",
+      "timestamp": "2026-06-11T23:33:29.685441",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P6",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:33:29.685562",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "vote",
+      "target": "PASS",
+      "timestamp": "2026-06-11T23:33:29.685665",
+      "reasoning": ""
+    }
+  ]
+}

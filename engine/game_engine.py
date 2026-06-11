@@ -92,10 +92,14 @@ class WerewolfEngine:
         self.winner = None
         # 步骤间延迟（秒），让游戏节奏可观察
         self.step_delay = self.config.get("step_delay", 1.5)
+        # 日志保存目录
+        self.log_dir = self.config.get("log_dir", "logs")
         # 人类玩家等待机制
         self._human_action_future: Optional[asyncio.Future] = None
         self._human_pending_action: Optional[Dict] = None
         self._game_loop: Optional[asyncio.AbstractEventLoop] = None
+        # 停止请求标志
+        self._stop_requested = False
         self._initialize_llm_client()
 
     def _generate_game_id(self) -> str:
@@ -183,18 +187,29 @@ class WerewolfEngine:
         self.assign_roles()
         self.log_event("GAME_START", "游戏开始！")
         await asyncio.sleep(self.step_delay)
-        
+
         while not self.check_victory():
+            if self._stop_requested:
+                break
             await self.run_night_phase()
-            if self.check_victory():
+            if self.check_victory() or self._stop_requested:
                 break
             await self.run_day_phase()
-        
+            if self._stop_requested:
+                break
+
+        if self._stop_requested:
+            self.log_event("GAME_STOP", "游戏被手动终止")
+            self.state.winner = "游戏被终止"
+            self.state.end_time = datetime.now()
+            self.save_game_log()
+            return self.state
+
         self.state.phase = GamePhase.GAME_OVER
         self.state.end_time = datetime.now()
         self.state.winner = self.winner
         self.log_event("GAME_OVER", f"游戏结束！胜利者是: {self.winner}")
-        
+
         self.save_game_log()
         return self.state
 
@@ -384,6 +399,10 @@ class WerewolfEngine:
                 self.log_event("SKILL", f"猎人带走了 {target}")
 
     async def request_agent_decision(self, agent: Player, action_type: str, context: Any) -> str:
+        # 快速响应停止请求
+        if self._stop_requested:
+            return "PASS"
+
         # 人类玩家：暂停游戏等待前端输入
         if agent.is_human:
             print(f"[人类玩家] 等待 {agent.id}({agent.name}) 做出 {action_type} 决策...")
@@ -512,6 +531,16 @@ class WerewolfEngine:
                 return True
         return False
 
+    def request_stop(self):
+        """请求停止游戏（线程安全）"""
+        self._stop_requested = True
+        # 如果正在等待人类玩家操作，解除等待
+        if self._human_action_future and not self._human_action_future.done():
+            if self._game_loop and self._game_loop.is_running():
+                self._game_loop.call_soon_threadsafe(
+                    lambda: self._human_action_future.set_result({"decision": "PASS"})
+                )
+
     def get_human_prompt(self) -> Optional[Dict]:
         """获取当前人类玩家的待处理操作信息"""
         return self._human_pending_action
@@ -535,7 +564,8 @@ class WerewolfEngine:
             } for ar in self.action_records]
         }
         
-        log_path = f"logs/{self.state.game_id}.json"
+        os.makedirs(self.log_dir, exist_ok=True)
+        log_path = os.path.join(self.log_dir, f"{self.state.game_id}.json")
         with open(log_path, "w", encoding="utf-8") as f:
             json.dump(log_data, f, ensure_ascii=False, indent=2)
         

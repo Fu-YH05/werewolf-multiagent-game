@@ -1,0 +1,241 @@
+{
+  "game_id": "game_20260611_233627_6357",
+  "start_time": "2026-06-11T23:36:29.894269",
+  "end_time": "2026-06-11T23:36:40.713854",
+  "winner": "游戏被终止",
+  "days": 1,
+  "players": {
+    "P1": {
+      "name": "小刚",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P2": {
+      "name": "小红",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P3": {
+      "name": "小明",
+      "role": "预言家",
+      "is_alive": true
+    },
+    "P4": {
+      "name": "小李",
+      "role": "狼人",
+      "is_alive": true
+    },
+    "P5": {
+      "name": "张三",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P6": {
+      "name": "李四",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P7": {
+      "name": "王五",
+      "role": "猎人",
+      "is_alive": true
+    },
+    "P8": {
+      "name": "赵六",
+      "role": "平民",
+      "is_alive": true
+    },
+    "P9": {
+      "name": "孙七",
+      "role": "女巫",
+      "is_alive": true
+    }
+  },
+  "logs": [
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P1(小刚) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:36:29.894301"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P2(小红) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P2",
+      "timestamp": "2026-06-11T23:36:29.894333"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P3(小明) 底牌: 预言家",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:36:29.894352"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P4(小李) 底牌: 狼人",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:36:29.894369"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P5(张三) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P5",
+      "timestamp": "2026-06-11T23:36:29.894387"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P6(李四) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P6",
+      "timestamp": "2026-06-11T23:36:29.894407"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P7(王五) 底牌: 猎人",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T23:36:29.894426"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P8(赵六) 底牌: 平民",
+      "hidden": true,
+      "player_id": "P8",
+      "timestamp": "2026-06-11T23:36:29.894447"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "ROLE_ASSIGN",
+      "content": "P9(孙七) 底牌: 女巫",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:36:29.894469"
+    },
+    {
+      "day": 1,
+      "phase": "初始化",
+      "type": "GAME_START",
+      "content": "游戏开始！",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:36:29.894493"
+    },
+    {
+      "day": 1,
+      "phase": "天黑请闭眼",
+      "type": "NIGHT_START",
+      "content": "天黑请闭眼...",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:36:30.096056"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P1(小刚) [狼群密语]: 随便杀一个吧，我无所谓，你们定就行。",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:36:31.184733"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "WOLF_CHAT",
+      "content": "P4(小李) [狼群密语]: 兄弟们，我觉得P8发言有点装，先把他刀了，看看反应！",
+      "hidden": true,
+      "player_id": "P4",
+      "timestamp": "2026-06-11T23:36:32.402529"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "type": "ACTION",
+      "content": "狼人击杀目标: P2",
+      "hidden": true,
+      "player_id": "P1",
+      "timestamp": "2026-06-11T23:36:35.801638"
+    },
+    {
+      "day": 1,
+      "phase": "女巫行动",
+      "type": "ACTION",
+      "content": "女巫使用了解药",
+      "hidden": true,
+      "player_id": "P9",
+      "timestamp": "2026-06-11T23:36:38.277731"
+    },
+    {
+      "day": 1,
+      "phase": "预言家验人",
+      "type": "ACTION",
+      "content": "预言家查验 P1 结果: 狼人",
+      "hidden": true,
+      "player_id": "P3",
+      "timestamp": "2026-06-11T23:36:40.302867"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "ACTION",
+      "content": "猎人觉醒",
+      "hidden": true,
+      "player_id": "P7",
+      "timestamp": "2026-06-11T23:36:40.508913"
+    },
+    {
+      "day": 1,
+      "phase": "猎人觉醒",
+      "type": "GAME_STOP",
+      "content": "游戏被手动终止",
+      "hidden": false,
+      "player_id": null,
+      "timestamp": "2026-06-11T23:36:40.713812"
+    }
+  ],
+  "action_records": [
+    {
+      "player_id": "P1",
+      "action_type": "kill",
+      "target": "P2",
+      "timestamp": "2026-06-11T23:36:35.801739",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P9",
+      "action_type": "save",
+      "target": "P2",
+      "timestamp": "2026-06-11T23:36:38.277757",
+      "reasoning": ""
+    },
+    {
+      "player_id": "P3",
+      "action_type": "check",
+      "target": "P1",
+      "timestamp": "2026-06-11T23:36:40.302889",
+      "reasoning": ""
+    }
+  ]
+}
