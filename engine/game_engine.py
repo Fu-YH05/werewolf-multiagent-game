@@ -188,15 +188,25 @@ class WerewolfEngine:
         self.log_event("GAME_START", "游戏开始！")
         await asyncio.sleep(self.step_delay)
 
-        while not self.check_victory():
-            if self._stop_requested:
-                break
-            await self.run_night_phase()
-            if self.check_victory() or self._stop_requested:
-                break
-            await self.run_day_phase()
-            if self._stop_requested:
-                break
+        try:
+            while not self.check_victory():
+                if self._stop_requested:
+                    break
+                await self.run_night_phase()
+                if self.check_victory() or self._stop_requested:
+                    break
+                await self.run_day_phase()
+                if self._stop_requested:
+                    break
+        except Exception as e:
+            import traceback
+            print(f"[游戏引擎] 游戏循环异常，尝试保存日志: {e}")
+            traceback.print_exc()
+            if not self.state.winner:
+                self.state.winner = f"异常终止: {str(e)[:50]}"
+            self.state.end_time = datetime.now()
+            self.save_game_log()
+            return self.state
 
         if self._stop_requested:
             self.log_event("GAME_STOP", "游戏被手动终止")
