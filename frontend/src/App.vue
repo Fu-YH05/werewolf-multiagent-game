@@ -68,18 +68,30 @@
               :key="player.id"
               :player="player"
               :show-role="isGameOver"
+              :is-human-mode="isHumanMode"
+              @annotate="handleAnnotate"
             />
           </div>
         </div>
         
-        <!-- 投票面板 -->
-        <VotePanel v-if="voteResults.length > 0" :vote-results="voteResults" />
+        <!-- 投票面板按钮 -->
+        <div v-if="voteResults.length > 0" class="vote-toggle-area">
+          <button
+            class="vote-toggle-btn"
+            @click="showVotePanel = !showVotePanel"
+          >
+            <span>🗳️ 投票记录 (第{{ voteResults[voteResults.length - 1]?.day }}天)</span>
+            <span class="ml-2 text-xs">{{ showVotePanel ? '🔽 收起' : '🔼 展开' }}</span>
+          </button>
+        </div>
+        <VotePanel v-if="showVotePanel && voteResults.length > 0" :vote-results="voteResults" />
         
         <!-- 日志面板 -->
         <LogsPanel
           :logs="logs"
           :current-filter="currentFilter"
           :empty-message="emptyMessage"
+          :is-human-mode="isHumanMode"
           @filter-change="currentFilter = $event"
         />
       </main>
@@ -116,6 +128,14 @@
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
     </div>
+    
+    <!-- 人类玩家操作面板 -->
+    <HumanActionPanel
+      :visible="!!humanPendingAction"
+      :action="humanPendingAction"
+      :game-id="currentGameId"
+      @submitted="onHumanSubmitted"
+    />
   </div>
 </template>
 
@@ -130,6 +150,7 @@ import Leaderboard from './components/Leaderboard.vue'
 import HistoryList from './components/HistoryList.vue'
 import RolesInfo from './components/RolesInfo.vue'
 import VotePanel from './components/VotePanel.vue'
+import HumanActionPanel from './components/HumanActionPanel.vue'
 
 // 生成星空
 const stars = ref([])
@@ -163,6 +184,10 @@ const durationInterval = ref(null)
 const pollInterval = ref(null)
 const duration = ref('0:00')
 const voteResults = ref([])
+const humanPendingAction = ref(null)
+const isHumanMode = ref(false)
+const showVotePanel = ref(false)
+const annotations = ref({})
 
 const emptyMessage = computed(() => {
   return isRunning.value 
@@ -221,14 +246,15 @@ async function loadLeaderboard() {
   }
 }
 
-async function startGame() {
+async function startGame(humanPlayerIndex = -1, stepDelay = 1.5) {
   isLoading.value = true
   
   try {
     const apiKey = controlPanelRef.value?.apiKey || ''
-    console.log('Starting game with API key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'None')
+    isHumanMode.value = humanPlayerIndex >= 0
+    console.log('Starting game with API key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'None', 'Human:', humanPlayerIndex, 'Delay:', stepDelay)
     
-    const response = await gameApi.startGame(apiKey)
+    const response = await gameApi.startGame(apiKey, humanPlayerIndex, stepDelay)
     const data = response.data
     
     if (data.error) {
@@ -238,9 +264,11 @@ async function startGame() {
     
     currentGameId.value = data.game_id
     gameState.value = data
-    players.value = data.players || []
+    players.value = mergeAnnotations(data.players || [])
     logs.value = []
     voteResults.value = []
+    humanPendingAction.value = null
+    showVotePanel.value = false
     isRunning.value = true
     gameStartTime.value = Date.now()
     
@@ -272,9 +300,14 @@ function startPolling() {
       if (data.error) return
       
       gameState.value = data
-      players.value = data.players || []
+      players.value = mergeAnnotations(data.players || [])
       logs.value = data.logs || []
       voteResults.value = data.vote_results || []
+      
+      // 检查人类玩家待处理操作
+      if (data.human_pending_action) {
+        humanPendingAction.value = data.human_pending_action
+      }
       
       if (data.is_over) {
         stopPolling()
@@ -329,14 +362,14 @@ async function loadReplay(item) {
     
     // 转换players数据格式（后端返回的是字典）
     if (data.players && typeof data.players === 'object') {
-      players.value = Object.entries(data.players).map(([id, p]) => ({
+      players.value = mergeAnnotations(Object.entries(data.players).map(([id, p]) => ({
         id: id,
         name: p.name,
         role: p.role,
         is_alive: p.is_alive
-      }))
+      })))
     } else {
-      players.value = data.players || []
+      players.value = mergeAnnotations(data.players || [])
     }
     
     logs.value = data.logs || []
@@ -350,6 +383,34 @@ async function loadReplay(item) {
   } finally {
     isLoading.value = false
   }
+}
+
+function onHumanSubmitted(decision) {
+  console.log('人类玩家操作已提交:', decision)
+  humanPendingAction.value = null
+}
+
+function handleAnnotate({ playerId, role }) {
+  if (annotations.value[playerId] === role) {
+    // 取消标注
+    delete annotations.value[playerId]
+  } else {
+    annotations.value[playerId] = role
+  }
+  // 触发响应式更新
+  annotations.value = { ...annotations.value }
+  // 将标注合并到 players 中
+  players.value = players.value.map(p => ({
+    ...p,
+    annotation: annotations.value[p.id] || null
+  }))
+}
+
+function mergeAnnotations(dataPlayers) {
+  return (dataPlayers || []).map(p => ({
+    ...p,
+    annotation: annotations.value[p.id] || null
+  }))
 }
 
 // 生命周期
@@ -371,7 +432,7 @@ onUnmounted(() => {
 }
 
 .header {
-  @apply mx-4 mt-4 rounded-xl p-5 flex justify-between items-center;
+  @apply mx-4 mt-2 rounded-xl py-2 px-4 flex justify-between items-center;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -380,11 +441,11 @@ onUnmounted(() => {
 }
 
 .logo {
-  @apply flex items-center gap-4;
+  @apply flex items-center gap-3;
 }
 
 .logo-icon {
-  @apply text-5xl;
+  @apply text-3xl;
   animation: wolf-pulse 2s infinite;
 }
 
@@ -394,24 +455,24 @@ onUnmounted(() => {
 }
 
 .logo h1 {
-  @apply text-2xl font-bold;
+  @apply text-lg font-bold;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-  @apply text-xs text-gray-400 mt-1;
+  @apply text-xs text-gray-400;
 }
 
 .main-container {
-  @apply grid h-[calc(100vh-120px)] px-4 pb-4;
-  grid-template-columns: 300px 1fr 320px;
-  gap: 16px;
+  @apply grid h-[calc(100vh-72px)] px-4 pb-2;
+  grid-template-columns: 260px 1fr 280px;
+  gap: 10px;
 }
 
 .sidebar-left {
-  @apply rounded-xl p-6 overflow-y-auto;
+  @apply rounded-xl p-3 overflow-y-auto;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -420,11 +481,11 @@ onUnmounted(() => {
 }
 
 .game-area {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-2 overflow-hidden;
 }
 
 .players-panel {
-  @apply rounded-xl p-6;
+  @apply rounded-xl p-3;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -433,15 +494,33 @@ onUnmounted(() => {
 }
 
 .players-grid {
-  @apply grid gap-4;
+  @apply grid gap-2;
   grid-template-columns: repeat(9, 1fr);
 }
 
+.vote-toggle-area {
+  @apply flex justify-center flex-shrink-0;
+}
+
+.vote-toggle-btn {
+  @apply px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.vote-toggle-btn:hover {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #22c55e;
+}
+
 .sidebar-right {
-  @apply rounded-xl p-6 overflow-y-auto;
+  @apply rounded-xl p-3 overflow-y-auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -489,7 +568,7 @@ onUnmounted(() => {
   @apply w-16 h-16 border-4 border-accent-green border-t-transparent rounded-full animate-spin;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
   .main-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;

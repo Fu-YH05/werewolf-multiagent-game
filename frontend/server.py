@@ -5,15 +5,18 @@ import sys
 import threading
 from datetime import datetime
 from typing import Optional, Dict, List
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_cors import CORS
 import queue
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from engine.game_engine import WerewolfEngine, GameState, Role
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)
 CORS(app)
+
+# 前端静态文件路径
+FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'dist')
 
 # 游戏状态存储
 current_game: Optional[WerewolfEngine] = None
@@ -25,7 +28,7 @@ game_initialized = threading.Event()  # 用于通知游戏初始化完成
 game_lock = threading.Lock()  # 用于保护共享变量的线程锁
 
 
-def run_async_game(api_key: str = None):
+def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay: float = 1.5):
     """在后台线程中运行游戏"""
     global current_game, game_running, game_logs_queue, game_init_error, game_initialized
     
@@ -41,9 +44,10 @@ def run_async_game(api_key: str = None):
             
             # 创建新游戏引擎
             player_names = ["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"]
+            config = {"step_delay": step_delay}
             with game_lock:
-                current_game = WerewolfEngine(player_names)
-            print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}")
+                current_game = WerewolfEngine(player_names, config=config, human_player_index=human_player_index)
+            print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}, 真人玩家: {human_player_index}")
             
             # 配置 LLM 客户端
             if api_key:
@@ -88,7 +92,17 @@ def run_async_game(api_key: str = None):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    """提供前端首页"""
+    if os.path.exists(os.path.join(FRONTEND_DIST, 'index.html')):
+        return send_from_directory(FRONTEND_DIST, 'index.html')
+    return jsonify({"message": "前端文件未构建，请先运行 npm run build", "status": "no_frontend"})
+
+
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    """提供前端静态资源（JS/CSS等）"""
+    assets_dir = os.path.join(FRONTEND_DIST, 'assets')
+    return send_from_directory(assets_dir, filename)
 
 
 @app.route('/api/game/start', methods=['POST'])
@@ -108,6 +122,8 @@ def start_game():
         print("[API] 获取请求数据")
         data = request.json or {}
         api_key = data.get('api_key') or os.getenv("DEEPSEEK_API_KEY", "")
+        human_player_index = data.get('human_player_index', -1)  # -1 = 无真人, 0-8 = 真人位置
+        step_delay = float(data.get('step_delay', 1.5))  # 步骤间延迟秒数
         game_init_error = None
         
         # 重置状态
@@ -121,7 +137,7 @@ def start_game():
         
         # 在后台线程启动游戏
         print("[API] 创建游戏线程")
-        thread = threading.Thread(target=run_async_game, args=(api_key,), name="GameThread")
+        thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay), name="GameThread")
         thread.daemon = True
         print("[API] 启动游戏线程")
         thread.start()
@@ -171,7 +187,8 @@ def start_game():
                 "id": p.id, 
                 "name": p.name,
                 "role": p.role.value if hasattr(p, 'role') and p.role else None,
-                "is_alive": p.is_alive
+                "is_alive": p.is_alive,
+                "is_human": p.is_human if hasattr(p, 'is_human') else False
             } for p in current_game.state.players.values()]
             
             game_id = current_game.state.game_id
@@ -206,16 +223,55 @@ def get_game_state(game_id: str):
         print(f"[API] 获取游戏状态：{game_id}, 阶段：{state.phase.value}")
         
         players_data = []
+        is_human_mode = False
+        human_player_id = None
+        human_is_wolf = False
         for p in state.players.values():
             player_info = {
                 "id": p.id,
                 "name": p.name,
                 "role": p.role.value if hasattr(p, 'role') and p.role else None,
                 "is_alive": p.is_alive,
+                "is_human": p.is_human if hasattr(p, 'is_human') else False,
                 "has_antidote": p.has_antidote if hasattr(p, 'has_antidote') else False,
                 "has_poison": p.has_poison if hasattr(p, 'has_poison') else False,
+                "is_hunter_revealed": p.is_hunter_revealed if hasattr(p, 'is_hunter_revealed') else False,
             }
+            if player_info["is_human"]:
+                is_human_mode = True
+                human_player_id = p.id
+                if p.role and p.role.value == "狼人":
+                    human_is_wolf = True
             players_data.append(player_info)
+
+        # 真人狼人模式下：标记狼队友并显示其身份
+        if is_human_mode and human_is_wolf:
+            for pi in players_data:
+                if pi["role"] == "狼人":
+                    pi["is_wolf_teammate"] = True  # 前端据此显示身份
+                else:
+                    pi["role"] = None  # 非狼队友仍然隐藏身份
+        
+        # 人类玩家模式下，过滤掉上帝视角日志（但保留真人玩家自己的行动）
+        raw_logs = state.logs[-100:]
+        if is_human_mode:
+            human_player_id = next(
+                (p.id for p in state.players.values() 
+                 if hasattr(p, 'is_human') and p.is_human), 
+                None
+            )
+            logs = [
+                log for log in raw_logs 
+                if not log.get("hidden", False) 
+                or log.get("player_id") == human_player_id
+            ]
+        else:
+            logs = raw_logs
+        
+        # 人类玩家待处理操作
+        human_pending = None
+        if current_game and hasattr(current_game, 'get_human_prompt'):
+            human_pending = current_game.get_human_prompt()
         
         return jsonify({
             "game_id": state.game_id,
@@ -223,8 +279,10 @@ def get_game_state(game_id: str):
             "phase": state.phase.value,
             "winner": state.winner,
             "players": players_data,
-            "logs": state.logs[-100:],
-            "is_over": state.phase.value == "GAME_OVER"
+            "logs": logs,
+            "vote_results": getattr(state, 'vote_results', []),
+            "is_over": state.phase.value == "GAME_OVER",
+            "human_pending_action": human_pending
         })
     
     print(f"[API] 游戏状态未找到：{game_id}")
@@ -242,6 +300,22 @@ def get_new_logs(game_id: str):
     except queue.Empty:
         pass
     
+    # 人类玩家模式下，过滤掉上帝视角日志（但保留真人玩家自己的行动）
+    if current_game and hasattr(current_game, 'state'):
+        human_player_id = None
+        has_human = False
+        for p in current_game.state.players.values():
+            if hasattr(p, 'is_human') and p.is_human:
+                has_human = True
+                human_player_id = p.id
+                break
+        if has_human:
+            logs = [
+                log for log in logs 
+                if not log.get("hidden", False) 
+                or log.get("player_id") == human_player_id
+            ]
+    
     return jsonify({"logs": logs})
 
 
@@ -257,6 +331,48 @@ def game_status():
         "current_game_exists": current_game is not None,
         "state_exists": current_game.state is not None if current_game else False
     })
+
+
+@app.route('/api/game/<game_id>/human/prompt')
+def get_human_prompt(game_id: str):
+    """获取人类玩家当前需要执行的操作"""
+    global current_game
+    
+    if not current_game or current_game.state.game_id != game_id:
+        return jsonify({"error": "Game not found", "code": "NOT_FOUND"}), 404
+    
+    if not hasattr(current_game, 'get_human_prompt'):
+        return jsonify({"error": "Not supported", "code": "NOT_SUPPORTED"}), 400
+    
+    prompt = current_game.get_human_prompt()
+    return jsonify({
+        "pending": prompt is not None,
+        "action": prompt
+    })
+
+
+@app.route('/api/game/<game_id>/human/action', methods=['POST'])
+def submit_human_action(game_id: str):
+    """提交人类玩家的操作"""
+    global current_game
+    
+    if not current_game or current_game.state.game_id != game_id:
+        return jsonify({"error": "Game not found", "code": "NOT_FOUND"}), 404
+    
+    if not hasattr(current_game, 'set_human_action'):
+        return jsonify({"error": "Not supported", "code": "NOT_SUPPORTED"}), 400
+    
+    data = request.json or {}
+    decision = data.get('decision', '')
+    
+    print(f"[人类玩家] 收到前端决策: {decision}")
+    
+    success = current_game.set_human_action({"decision": decision})
+    
+    if success:
+        return jsonify({"success": True, "decision": decision})
+    else:
+        return jsonify({"error": "No pending human action or game not waiting", "code": "NO_PENDING"}), 400
 
 
 @app.route('/api/health')
@@ -342,6 +458,17 @@ def get_roles_info():
         {"id": "villager", "name": "平民", "icon": "👤", "description": "通过投票找出狼人"}
     ]
     return jsonify(roles)
+
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    """SPA catch-all：未匹配路由返回前端页面"""
+    file_path = os.path.join(FRONTEND_DIST, filename)
+    if os.path.exists(file_path) and not os.path.isdir(file_path):
+        return send_from_directory(FRONTEND_DIST, filename)
+    if os.path.exists(os.path.join(FRONTEND_DIST, 'index.html')):
+        return send_from_directory(FRONTEND_DIST, 'index.html')
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == '__main__':

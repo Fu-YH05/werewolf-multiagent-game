@@ -34,15 +34,15 @@ defineProps({
 
 <style scoped>
 .roles-section {
-  @apply mt-6;
+  @apply mt-3;
 }
 
 .roles-grid {
-  @apply space-y-2;
+  @apply space-y-1.5;
 }
 
 .role-card {
-  @apply flex items-center p-3 bg-bg-card rounded-lg border-l-4;
+  @apply flex items-center p-2 bg-bg-card rounded-lg border-l-4;
 }
 
 .role-card.role-werewolf {
@@ -66,7 +66,7 @@ defineProps({
 }
 
 .role-icon {
-  @apply w-10 h-10 rounded-lg flex items-center justify-center text-xl mr-3;
+  @apply w-8 h-8 rounded-lg flex items-center justify-center text-base mr-2;
 }
 
 .role-card.role-werewolf .role-icon {

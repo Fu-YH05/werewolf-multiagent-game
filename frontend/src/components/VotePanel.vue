@@ -4,19 +4,19 @@
       <span>🗳️</span> 投票记录
     </h3>
     
-    <div class="space-y-6">
+    <div class="space-y-3">
       <div
         v-for="(voteResult, index) in voteResults"
         :key="index"
         class="vote-round fade-in"
       >
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-2 mb-1.5">
           <span class="text-accent-gold font-medium">第{{ voteResult.day }}天</span>
           <span class="text-gray-400 text-sm">投票</span>
         </div>
         
         <!-- 投票Chips -->
-        <div class="flex flex-wrap gap-2 mb-4">
+        <div class="flex flex-wrap gap-1.5 mb-2">
           <div
             v-for="(count, target) in voteResult.votes"
             :key="target"
@@ -41,7 +41,7 @@
         </div>
         
         <!-- 投票详情 -->
-        <div class="mt-3 text-sm text-gray-400">
+        <div class="mt-2 text-sm text-gray-400">
           <span class="font-medium text-gray-300">投票详情:</span>
           <div class="flex flex-wrap gap-2 mt-1">
             <span
@@ -55,7 +55,7 @@
         </div>
         
         <!-- PK轮次 -->
-        <div v-if="voteResult.pk_1" class="mt-4 pt-4 border-t border-white/10">
+        <div v-if="voteResult.pk_1" class="mt-2 pt-2 border-t border-white/10">
           <div class="text-sm text-accent-gold mb-2">🔄 PK第1轮</div>
           <div class="flex flex-wrap gap-2">
             <span
@@ -135,7 +135,7 @@ function getBarHeight(count, votes) {
 }
 
 .vote-round {
-  padding: 12px;
+  padding: 8px;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
 }
@@ -164,9 +164,9 @@ function getBarHeight(count, votes) {
 .bar-chart-container {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
-  height: 80px;
-  padding: 8px 0;
+  gap: 6px;
+  height: 50px;
+  padding: 4px 0;
 }
 
 .bar-item {

@@ -36,8 +36,12 @@ export const gameApi = {
   // 健康检查
   checkHealth: () => api.get('/health'),
   
-  // 开始新游戏
-  startGame: (apiKey = '') => api.post('/game/start', { api_key: apiKey }),
+  // 开始新游戏 (支持真人玩家参数、延迟配置)
+  startGame: (apiKey = '', humanPlayerIndex = -1, stepDelay = 1.5) => api.post('/game/start', { 
+    api_key: apiKey,
+    human_player_index: humanPlayerIndex,
+    step_delay: stepDelay
+  }),
   
   // 获取游戏状态
   getGameState: (gameId) => api.get(`/game/${gameId}/state`),
@@ -47,6 +51,12 @@ export const gameApi = {
   
   // 获取游戏状态
   getStatus: () => api.get('/game/status'),
+  
+  // 人类玩家：获取待处理操作
+  getHumanPrompt: (gameId) => api.get(`/game/${gameId}/human/prompt`),
+  
+  // 人类玩家：提交操作
+  submitHumanAction: (gameId, decision) => api.post(`/game/${gameId}/human/action`, { decision }),
   
   // 获取历史记录
   getHistory: () => api.get('/game/history'),

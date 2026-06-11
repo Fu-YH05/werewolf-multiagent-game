@@ -13,15 +13,15 @@
         </button>
       </div>
     </div>
-    <div ref="logsContainer" class="logs-container">
+    <div ref="logsContainer" class="logs-scroll-viewport">
+      <div v-if="displayLogs.length === 0" class="empty-logs">
+        {{ emptyMessage }}
+      </div>
       <LogEntry
-        v-for="(log, index) in filteredLogs"
+        v-for="(log, index) in displayLogs"
         :key="index"
         :log="log"
       />
-      <div v-if="logs.length === 0" class="text-center text-gray-400 py-10">
-        {{ emptyMessage }}
-      </div>
     </div>
   </div>
 </template>
@@ -42,6 +42,10 @@ const props = defineProps({
   emptyMessage: {
     type: String,
     default: '点击"开始游戏"按钮开始新的对局'
+  },
+  isHumanMode: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -51,27 +55,35 @@ const logsContainer = ref(null)
 
 const filters = [
   { label: '全部', value: 'all' },
-  { label: '行动', value: 'action' },
   { label: '发言', value: 'speak' },
-  { label: '投票', value: 'vote' }
+  { label: '投票', value: 'vote' },
+  { label: '公告', value: 'announce' }
 ]
 
-const filteredLogs = computed(() => {
-  if (props.currentFilter === 'all') {
-    return props.logs
+const displayLogs = computed(() => {
+  // 真人模式下先过滤隐藏日志
+  let result = props.logs
+  if (props.isHumanMode) {
+    result = result.filter(log => !log.hidden)
   }
   
-  return props.logs.filter(log => {
-    const type = log.type || ''
-    if (props.currentFilter === 'action') {
-      return type.includes('ACTION') || type.includes('KILL') || type.includes('SEER') ||
-             type.includes('save') || type.includes('check')
-    }
+  // 再按类型筛选
+  if (props.currentFilter === 'all') {
+    return result
+  }
+  
+  return result.filter(log => {
+    const type = (log.type || '').toLowerCase()
     if (props.currentFilter === 'speak') {
-      return type.includes('SPEECH') || type.includes('发言')
+      return type.includes('speech') || type.includes('发言')
     }
     if (props.currentFilter === 'vote') {
-      return type.includes('VOTE') || type.includes('投票')
+      return type.includes('vote') || type.includes('投票')
+    }
+    if (props.currentFilter === 'announce') {
+      return type.includes('announce') || type.includes('game_start') || 
+             type.includes('game_over') || type.includes('night_start') ||
+             type.includes('day_start') || type.includes('lynch')
     }
     return true
   })
@@ -88,15 +100,15 @@ watch(() => props.logs.length, async () => {
 
 <style scoped>
 .logs-panel {
-  @apply flex-1 p-5 bg-bg-primary overflow-y-auto;
+  @apply flex flex-col p-3 bg-bg-primary;
 }
 
 .logs-header {
-  @apply flex justify-between items-center mb-4;
+  @apply flex justify-between items-center mb-2 flex-shrink-0;
 }
 
 .logs-filter {
-  @apply flex gap-2;
+  @apply flex gap-1.5;
 }
 
 .filter-btn {
@@ -104,11 +116,41 @@ watch(() => props.logs.length, async () => {
   @apply bg-bg-card text-gray-400;
 }
 
-.filter-btn.active {
-  @apply bg-accent-gold text-bg-primary;
+.filter-btn:hover {
+  @apply bg-white/10 text-white;
 }
 
-.logs-container {
-  @apply bg-bg-secondary rounded-xl p-4 h-[calc(100%-50px)] overflow-y-auto;
+.filter-btn.active {
+  @apply bg-accent-green/20 text-accent-green;
+}
+
+.logs-scroll-viewport {
+  @apply overflow-y-auto overflow-x-hidden rounded-lg p-2;
+  height: 320px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  scroll-behavior: smooth;
+}
+
+.logs-scroll-viewport::-webkit-scrollbar {
+  width: 5px;
+}
+
+.logs-scroll-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.logs-scroll-viewport::-webkit-scrollbar-thumb {
+  @apply rounded-full;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.logs-scroll-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.empty-logs {
+  @apply flex items-center justify-center text-gray-400 text-sm;
+  height: 280px;
 }
 </style>

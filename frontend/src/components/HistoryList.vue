@@ -36,15 +36,15 @@ defineEmits(['select'])
 
 <style scoped>
 .history-section {
-  @apply mt-6;
+  @apply mt-3;
 }
 
 .history-list {
-  @apply max-h-64 overflow-y-auto;
+  @apply max-h-48 overflow-y-auto;
 }
 
 .history-item {
-  @apply bg-bg-card rounded-lg p-3 mb-2 cursor-pointer transition-all border border-transparent;
+  @apply bg-bg-card rounded-lg p-2 mb-1.5 cursor-pointer transition-all border border-transparent;
 }
 
 .history-item:hover {

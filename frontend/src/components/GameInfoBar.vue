@@ -5,8 +5,8 @@
         {{ phaseIcon }}
       </div>
       <div class="phase-text">
-        <h2 class="text-xl font-bold">{{ phase }}</h2>
-        <p class="text-sm text-gray-400 mt-1">第 {{ day }} 天</p>
+        <h2 class="text-base font-bold">{{ phase }}</h2>
+        <p class="text-xs text-gray-400 mt-0.5">第 {{ day }} 天</p>
       </div>
     </div>
     <div v-if="winner" class="winner-badge animate-pulse-gold">
@@ -45,15 +45,15 @@ const phaseIcon = computed(() => {
 
 <style scoped>
 .game-info-bar {
-  @apply flex justify-between items-center p-5 bg-bg-secondary border-b border-white/5;
+  @apply flex justify-between items-center py-2 px-4 bg-bg-secondary border-b border-white/5 flex-shrink-0;
 }
 
 .phase-display {
-  @apply flex items-center gap-4;
+  @apply flex items-center gap-3;
 }
 
 .phase-icon {
-  @apply w-12 h-12 rounded-full flex items-center justify-center text-2xl;
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-lg;
 }
 
 .phase-icon-night {
@@ -67,7 +67,7 @@ const phaseIcon = computed(() => {
 }
 
 .winner-badge {
-  @apply px-6 py-3 rounded-full font-bold text-lg text-bg-primary;
+  @apply px-4 py-1.5 rounded-full font-bold text-sm text-bg-primary;
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
 }
 </style>

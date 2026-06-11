@@ -1,57 +1,88 @@
 <template>
   <div
-    class="player-card glass-card rounded-xl p-4 text-center transition-all duration-300"
+    class="player-card glass-card rounded-xl p-2 text-center transition-all duration-300"
     :class="{ 
       'opacity-50': !player.is_alive,
-      'glow-border-green': player.is_alive && isRole(player, '狼人'),
-      'glow-border-purple': player.is_alive && isRole(player, '平民'),
-      'glow-border-blue': player.is_alive && isRole(player, '预言家'),
-      'glow-border-pink': player.is_alive && isRole(player, '女巫'),
-      'glow-border-red': player.is_alive && isRole(player, '猎人')
+      'glow-border-green': player.is_alive && canSeeRole && isRole(player, '狼人'),
+      'glow-border-purple': player.is_alive && canSeeRole && isRole(player, '平民'),
+      'glow-border-blue': player.is_alive && canSeeRole && isRole(player, '预言家'),
+      'glow-border-pink': player.is_alive && canSeeRole && isRole(player, '女巫'),
+      'glow-border-red': player.is_alive && canSeeRole && isRole(player, '猎人'),
+      'glow-border-human': player.is_alive && !canSeeRole
     }"
   >
     <div 
-      class="player-avatar mx-auto mb-3"
+      class="player-avatar mx-auto mb-1.5"
       :class="{ 
         'alive': player.is_alive,
         'dead': !player.is_alive,
-        'pulse-glow': player.is_alive
+        'pulse-glow': player.is_alive && canSeeRole
       }"
     >
       {{ player.id.replace('P', '') }}
     </div>
     
-    <div class="text-sm font-medium text-white mb-1">
+    <div class="text-sm font-medium text-white mb-0.5">
       {{ player.name }}
-      <span v-if="player.is_human" class="text-xs text-accent-gold ml-1">[真人]</span>
+      <span v-if="player.is_human" class="text-xs text-accent-gold ml-0.5">[真人]</span>
     </div>
     
-    <div class="text-xs text-gray-400 mb-2">{{ player.id }}</div>
+    <div class="text-xs text-gray-400 mb-1">{{ player.id }}</div>
     
-    <div v-if="showRole" class="role-badge" :class="getRoleClass(player)">
+    <!-- 身份：游戏结束全局可见，真人模式下自己可见 -->
+    <div v-if="canSeeRole" class="role-badge" :class="getRoleClass(player)">
       {{ player.role }}
     </div>
-    
     <div v-else class="role-badge role-unknown">
       ?
     </div>
     
-    <div v-if="!player.is_alive" class="mt-2 text-xs text-red-400">
+    <!-- 标注身份：仅真人模式且未全局展示时可用 -->
+    <div v-if="isHumanMode && !showRole" class="mt-1">
+      <button
+        class="annotation-btn"
+        @click.stop="toggleAnnotation"
+        :class="{ active: player.annotation }"
+        title="为该玩家标注你认为的身份"
+      >
+        {{ player.annotation ? '🏷️' : '📝' }}
+      </button>
+      <div v-if="annotationOpen" class="annotation-dropdown" @click.stop>
+        <div
+          v-for="role in roleOptions"
+          :key="role"
+          class="annotation-option"
+          :class="{ selected: player.annotation === role }"
+          @click.stop="selectAnnotation(role)"
+        >
+          {{ role }}
+        </div>
+      </div>
+    </div>
+    
+    <!-- 标注结果显示 -->
+    <div v-if="player.annotation && !showRole" class="annotation-badge">
+      {{ player.annotation }}
+    </div>
+    
+    <div v-if="!player.is_alive" class="mt-1 text-xs text-red-400">
       💀 已淘汰
     </div>
     
-    <div v-if="player.is_hunter_revealed && player.is_alive" class="mt-2 text-xs text-orange-400">
+    <!-- 猎人觉醒：仅自己可见或游戏结束 -->
+    <div v-if="canSeeRole && player.is_hunter_revealed && player.is_alive" class="mt-1 text-xs text-orange-400">
       🔫 猎人已觉醒
     </div>
     
-    <div v-if="player.is_alive && hasSpecialAbility(player)" class="mt-2 text-xs text-blue-400">
+    <!-- 特殊技能：仅自己可见或游戏结束 -->
+    <div v-if="canSeeRole && player.is_alive && hasSpecialAbility(player)" class="mt-1 text-xs text-blue-400">
       {{ getAbilityText(player) }}
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   player: {
@@ -61,8 +92,32 @@ const props = defineProps({
   showRole: {
     type: Boolean,
     default: false
+  },
+  isHumanMode: {
+    type: Boolean,
+    default: false
   }
 })
+
+const emit = defineEmits(['annotate'])
+
+const annotationOpen = ref(false)
+
+const roleOptions = ['狼人', '预言家', '女巫', '猎人', '平民']
+
+// 真人模式：真人自己可见、狼队友可见；全局展示模式下所有人可见
+const canSeeRole = computed(() => {
+  return props.showRole || (props.isHumanMode && (props.player.is_human || props.player.is_wolf_teammate))
+})
+
+function toggleAnnotation() {
+  annotationOpen.value = !annotationOpen.value
+}
+
+function selectAnnotation(role) {
+  emit('annotate', { playerId: props.player.id, role })
+  annotationOpen.value = false
+}
 
 function isRole(player, roleName) {
   return player.role === roleName
@@ -89,7 +144,7 @@ function getAbilityText(player) {
     const abilities = []
     if (player.has_antidote) abilities.push('解药')
     if (player.has_poison) abilities.push('毒药')
-    return `药剂: ${abilities.join('/')}`
+    return `🧪 ${abilities.join(' / ')}`
   }
   if (player.role === '猎人') {
     return '🔫 可开枪'
@@ -100,31 +155,31 @@ function getAbilityText(player) {
 
 <style scoped>
 .player-card {
-  min-width: 80px;
-  max-width: 100px;
+  min-width: 60px;
+  max-width: 80px;
 }
 
 .player-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .player-avatar {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
 }
 
 .player-avatar.alive {
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), 0 4px 15px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4), 0 4px 15px rgba(79, 70, 229, 0.3);
 }
 
 .player-avatar.dead {
@@ -133,9 +188,9 @@ function getAbilityText(player) {
 }
 
 .role-badge {
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 10px;
   font-weight: medium;
 }
 
@@ -170,31 +225,95 @@ function getAbilityText(player) {
 }
 
 .glow-border-green {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), inset 0 0 10px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.25), inset 0 0 6px rgba(34, 197, 94, 0.08);
 }
 
 .glow-border-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.25), inset 0 0 6px rgba(139, 92, 246, 0.08);
 }
 
 .glow-border-blue {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 10px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.25), inset 0 0 6px rgba(59, 130, 246, 0.08);
 }
 
 .glow-border-pink {
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3), inset 0 0 10px rgba(236, 72, 153, 0.1);
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.25), inset 0 0 6px rgba(236, 72, 153, 0.08);
 }
 
 .glow-border-red {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), inset 0 0 10px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.25), inset 0 0 6px rgba(239, 68, 68, 0.08);
+}
+
+.glow-border-human {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.06), inset 0 0 4px rgba(255, 255, 255, 0.03);
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
-  50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.8), 0 0 45px rgba(34, 197, 94, 0.4); }
+  0%, 100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.35); }
+  50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 30px rgba(34, 197, 94, 0.3); }
 }
 
 .pulse-glow {
   animation: pulse-glow 2s infinite;
+}
+
+/* 标注按钮 */
+.annotation-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.5;
+}
+.annotation-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.annotation-btn.active {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.4);
+}
+
+/* 标注下拉 */
+.annotation-dropdown {
+  position: absolute;
+  background: #1e1b4b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 2px 0;
+  z-index: 50;
+  min-width: 64px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  margin-top: 2px;
+}
+.annotation-option {
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.annotation-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+.annotation-option.selected {
+  background: rgba(234, 179, 8, 0.15);
+  color: #fbbf24;
+}
+
+/* 标注徽章 */
+.annotation-badge {
+  margin-top: 2px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 500;
+  background: rgba(234, 179, 8, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(234, 179, 8, 0.25);
 }
 </style>

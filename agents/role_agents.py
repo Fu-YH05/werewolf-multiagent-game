@@ -767,7 +767,8 @@ class RoleAgent:
             "witch": """【阶段: 女巫行动】昨夜死亡: {killed_player}。解药状态:{has_antidote}, 毒药状态:{has_poison}。请按照三段式结构输出：
 【心声】分析局势，决定是否用药（不超过100字）
 【表现】用药时的行为表现（如：果断救人、谨慎毒杀、保守观望等）
-【行动】<WITCH>save</WITCH> 或 <WITCH>poison_玩家ID</WITCH> 或 <WITCH>pass</WITCH>"""
+【行动】<WITCH>save</WITCH> 或 <WITCH>poison_玩家ID</WITCH> 或 <WITCH>pass</WITCH>""",
+            "wolf_discuss": """【阶段: 狼队夜间讨论】你是狼队成员，现在需要和狼队友商量今晚要杀谁。请用简短自然的口语表达你的意见（10-30字），可以是推荐目标、战术建议或对队友意见的附和。直接输出你的发言即可，不需要格式标签。"""
         }
     }
 
@@ -975,7 +976,8 @@ class RoleAgent:
                 "has_poison": "有" if self.player.has_poison else "无"
             })
         
-        user_prompt = f"【公开日志】\n{history}\n\n【行动任务】\n{self.PROMPT_TEMPLATES['actions'][action_type].format(**action_kwargs)}"
+        action_template = self.PROMPT_TEMPLATES["actions"].get(action_type, self.PROMPT_TEMPLATES["actions"]["speak"])
+        user_prompt = f"【公开日志】\n{history}\n\n【行动任务】\n{action_template.format(**action_kwargs)}"
         
         return {"system": system_prompt, "user": user_prompt}
 
@@ -987,6 +989,9 @@ class RoleAgent:
                 return self.last_speech_content
             self.last_speech_content = raw.strip()
             return self.last_speech_content
+        
+        if action_type == "wolf_discuss":
+            return raw.strip()
         
         tag_map = {
             "vote": "VOTE",
@@ -1058,6 +1063,16 @@ class RoleAgent:
             return f"""【心声】现在需要发言，根据我的身份制定策略。
 【表现】{behavior}
 【发言】{phrase}"""
+        
+        if action_type == "wolf_discuss":
+            suggestions = [
+                f"我觉得杀{alive_ids[0]}比较好，他可能是神职。",
+                f"杀{alive_ids[-1]}吧，他发言最少像平民。",
+                "我同意队友的意见，今晚就杀那个最可疑的。",
+                "建议杀发言最积极的，大概率是神职。",
+                "先杀外围的，别碰被预言家盯上的。"
+            ]
+            return random.choice(suggestions)
         
         return "PASS"
 
