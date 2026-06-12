@@ -16,6 +16,9 @@
         }"
       ></div>
     </div>
+
+    <!-- 白天暖光叠加层 -->
+    <div v-if="isDaytime" class="daytime-overlay"></div>
     
     <!-- 头部 -->
     <header class="header">
@@ -29,30 +32,37 @@
     </header>
     
     <!-- 主容器 -->
-    <div class="main-container">
+    <div class="main-container" :style="{
+      gridTemplateColumns: `${leftCollapsed ? '40px' : '260px'} 1fr ${rightCollapsed ? '40px' : '280px'}`
+    }">
       <!-- 左侧控制面板 -->
-      <aside class="sidebar-left">
-        <ControlPanel
-          ref="controlPanelRef"
-          :game-id="currentGameId"
-          :phase="phase"
-          :alive-count="alivePlayers.length"
-          :total-players="9"
-          :duration="duration"
-          :is-running="isRunning"
-          :is-paused="isPaused"
-          :viewing-replay="viewingReplay"
-          :has-live-game="!!savedLiveState"
-          @start="startGame"
-          @toggle-pause="togglePause"
-          @stop="stopGame"
-          @show-replay="showReplayModal = true"
-        />
-        
-        <HistoryList
-          :history="history"
-          @select="loadReplay"
-        />
+      <aside class="sidebar-left" :class="{ collapsed: leftCollapsed }">
+        <div class="sidebar-inner" v-show="!leftCollapsed">
+          <ControlPanel
+            ref="controlPanelRef"
+            :game-id="currentGameId"
+            :phase="phase"
+            :alive-count="alivePlayers.length"
+            :total-players="9"
+            :duration="duration"
+            :is-running="isRunning"
+            :is-paused="isPaused"
+            :viewing-replay="viewingReplay"
+            :has-live-game="!!savedLiveState"
+            @start="startGame"
+            @toggle-pause="togglePause"
+            @stop="stopGame"
+            @show-replay="showReplayModal = true"
+          />
+
+          <HistoryList
+            :history="history"
+            @select="loadReplay"
+          />
+        </div>
+        <button class="collapse-btn collapse-left" @click="leftCollapsed = !leftCollapsed" :title="leftCollapsed ? '展开左侧' : '收起左侧'">
+          {{ leftCollapsed ? '▶' : '◀' }}
+        </button>
       </aside>
       
       <!-- 中间游戏区域 -->
@@ -80,6 +90,7 @@
               :player="player"
               :show-role="isGameOver"
               :is-human-mode="isHumanMode"
+              :speeches="playerSpeeches[player.id] || []"
               @annotate="handleAnnotate"
             />
           </div>
@@ -103,14 +114,21 @@
           :current-filter="currentFilter"
           :empty-message="emptyMessage"
           :is-human-mode="isHumanMode"
+          :is-daytime="isDaytime"
+          :game-id="currentGameId"
           @filter-change="currentFilter = $event"
         />
       </main>
       
       <!-- 右侧信息面板 -->
-      <aside class="sidebar-right">
-        <Leaderboard :leaderboard="leaderboard" />
-        <RolesInfo />
+      <aside class="sidebar-right" :class="{ collapsed: rightCollapsed }">
+        <button class="collapse-btn collapse-right" @click="rightCollapsed = !rightCollapsed" :title="rightCollapsed ? '展开右侧' : '收起右侧'">
+          {{ rightCollapsed ? '◀' : '▶' }}
+        </button>
+        <div class="sidebar-inner" v-show="!rightCollapsed">
+          <Leaderboard :leaderboard="leaderboard" />
+          <RolesInfo />
+        </div>
       </aside>
     </div>
     
@@ -204,6 +222,14 @@ const annotations = ref({})
 const viewingReplay = ref(false)
 const savedLiveState = ref(null)
 
+// 侧栏折叠状态
+const leftCollapsed = ref(false)
+const rightCollapsed = ref(false)
+
+// 白天阶段检测
+const dayPhases = ['天亮请睁眼', '自由发言', '放逐投票', '游戏结束']
+const isDaytime = computed(() => dayPhases.includes(phase.value))
+
 const emptyMessage = computed(() => {
   if (viewingReplay.value) return '观看回放中'
   return isRunning.value
@@ -214,6 +240,22 @@ const emptyMessage = computed(() => {
 // 计算属性
 const alivePlayers = computed(() => {
   return players.value.filter(p => p.is_alive)
+})
+
+const playerSpeeches = computed(() => {
+  const map = {}
+  const speechLogs = logs.value.filter(l => l.type === 'SPEECH')
+  // 从后遍历取最近 5 条
+  for (let i = speechLogs.length - 1; i >= 0; i--) {
+    const log = speechLogs[i]
+    const pid = log.player_id
+    if (!pid) continue
+    if (!map[pid]) map[pid] = []
+    if (map[pid].length < 5) {
+      map[pid].push({ day: log.day, phase: log.phase, content: log.content })
+    }
+  }
+  return map
 })
 
 const phase = computed(() => {
@@ -593,15 +635,40 @@ onUnmounted(() => {
   @apply grid h-[calc(100vh-72px)] px-4 pb-2;
   grid-template-columns: 260px 1fr 280px;
   gap: 10px;
+  transition: grid-template-columns 0.35s ease;
+}
+
+/* 白天暖光叠加层 */
+.daytime-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 200, 100, 0.07) 0%, rgba(255, 180, 50, 0.03) 40%, transparent 70%);
+  transition: opacity 0.5s ease;
 }
 
 .sidebar-left {
-  @apply rounded-xl p-3 overflow-y-auto;
+  @apply rounded-xl overflow-y-auto;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  transition: all 0.35s ease;
+  position: relative;
+}
+.sidebar-left.collapsed {
+  min-width: 0;
+}
+.sidebar-left .sidebar-inner {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  min-width: 0;
 }
 
 .game-area {
@@ -641,15 +708,27 @@ onUnmounted(() => {
 }
 
 .sidebar-right {
-  @apply rounded-xl p-3 overflow-y-auto;
+  @apply rounded-xl overflow-y-auto;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 0;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.35s ease;
+  overflow: hidden;
+  position: relative;
+}
+.sidebar-right .sidebar-inner {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
 }
 
 .modal-overlay {
@@ -722,6 +801,35 @@ onUnmounted(() => {
   background: rgba(34, 197, 94, 0.3);
   border-color: rgba(34, 197, 94, 0.5);
   color: #86efac;
+}
+
+/* 折叠按钮 */
+.collapse-btn {
+  flex-shrink: 0;
+  width: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}
+.collapse-left {
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0 12px 12px 0;
+}
+.collapse-right {
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px 0 0 12px;
+  order: -1;
 }
 
 .loading-overlay {
