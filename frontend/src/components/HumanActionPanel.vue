@@ -72,14 +72,31 @@
 
         <!-- 自由文本模式 (speak) -->
         <div v-if="action?.options?.type === 'free_text'" class="text-input-area">
-          <textarea
-            v-model="textInput"
-            :placeholder="action?.options?.placeholder || '输入你的发言...'"
-            :disabled="submitting"
-            class="speech-textarea"
-            rows="3"
-            @keydown.ctrl.enter="submitDecision(textInput)"
-          ></textarea>
+          <div class="speech-input-row">
+            <textarea
+              v-model="textInput"
+              :placeholder="action?.options?.placeholder || '输入你的发言...'"
+              :disabled="submitting"
+              class="speech-textarea"
+              rows="3"
+              @keydown.ctrl.enter="submitDecision(textInput)"
+            ></textarea>
+            <button
+              class="mic-btn"
+              :class="{ recording: isRecording }"
+              :title="isRecording ? '点击停止' : '点击开始语音输入'"
+              @mousedown.prevent="startRecording"
+              @mouseup.prevent="stopRecording"
+              @mouseleave.prevent="stopRecording"
+              @touchstart.prevent="startRecording"
+              @touchend.prevent="stopRecording"
+            >
+              <span v-if="isRecording" class="mic-pulse"></span>
+              <span class="mic-icon">{{ isRecording ? '🔴' : '🎤' }}</span>
+            </button>
+          </div>
+          <div v-if="recognitionError" class="mic-error">{{ recognitionError }}</div>
+          <div v-if="isRecording" class="mic-status">🎙️ 录音中，请说话...</div>
           <button
             :disabled="submitting || !textInput.trim()"
             class="submit-speech-btn"
@@ -113,6 +130,75 @@ const emit = defineEmits(['submitted'])
 
 const textInput = ref('')
 const submitting = ref(false)
+const isRecording = ref(false)
+const recognitionError = ref('')
+let recognition = null
+
+function initRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  if (!SpeechRecognition) {
+    recognitionError.value = '当前浏览器不支持语音输入，请使用 Chrome 或 Edge'
+    return null
+  }
+  const r = new SpeechRecognition()
+  r.lang = 'zh-CN'
+  r.continuous = true
+  r.interimResults = true
+  r.maxAlternatives = 1
+  r.onresult = (e) => {
+    let finalText = ''
+    let interimText = ''
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript
+      } else {
+        interimText += e.results[i][0].transcript
+      }
+    }
+    if (finalText) {
+      textInput.value = (textInput.value + finalText).trim()
+    }
+  }
+  r.onerror = (e) => {
+    console.error('语音识别错误:', e.error)
+    if (e.error === 'not-allowed') {
+      recognitionError.value = '麦克风权限被拒绝，请在浏览器设置中允许'
+    } else if (e.error === 'no-speech') {
+      recognitionError.value = '未检测到语音，请重试'
+    } else {
+      recognitionError.value = `语音识别错误: ${e.error}`
+    }
+    isRecording.value = false
+  }
+  r.onend = () => {
+    isRecording.value = false
+  }
+  return r
+}
+
+function startRecording() {
+  recognitionError.value = ''
+  if (!recognition) {
+    recognition = initRecognition()
+  }
+  if (!recognition) return
+  try {
+    recognition.start()
+    isRecording.value = true
+  } catch (e) {
+    // 可能已经在运行
+    if (e.name !== 'InvalidStateError') {
+      console.error('启动录音失败:', e)
+    }
+  }
+}
+
+function stopRecording() {
+  if (recognition && isRecording.value) {
+    recognition.stop()
+    isRecording.value = false
+  }
+}
 
 const roleIcon = computed(() => {
   const map = { '狼人': '🐺', '平民': '👤', '预言家': '🔮', '女巫': '🧪', '猎人': '🏹' }
@@ -327,8 +413,14 @@ async function submitDecision(decision) {
   gap: 0.6rem;
 }
 
+.speech-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
 .speech-textarea {
-  width: 100%;
+  flex: 1;
   padding: 0.7rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -341,6 +433,62 @@ async function submitDecision(decision) {
 }
 .speech-textarea:focus { border-color: rgba(34, 197, 94, 0.5); }
 .speech-textarea::placeholder { color: #64748b; }
+
+/* 话筒按钮 */
+.mic-btn {
+  width: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  user-select: none;
+}
+.mic-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.mic-btn.recording {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+.mic-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.mic-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  animation: mic-pulse 1.2s ease-out infinite;
+}
+@keyframes mic-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.mic-error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.mic-status {
+  color: #ef4444;
+  font-size: 0.8rem;
+  text-align: center;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
 
 .submit-speech-btn {
   padding: 0.65rem;

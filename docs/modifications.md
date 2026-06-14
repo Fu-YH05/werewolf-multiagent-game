@@ -189,6 +189,17 @@
 - 面板总高度默认 520px，笔记高度默认 160px，均存入 `localStorage` 持久化
 - 移除 CSS 过渡延迟，确保拖拽实时响应
 
+### 4.7 语音输入 🎤
+
+**涉及文件**: `frontend/src/components/HumanActionPanel.vue`
+
+**改动**:
+- 发言输入框右侧新增话筒按钮
+- 按住 🎤 按钮录音，松开自动语音转文字填入输入框
+- 录音时按钮变红 + 脉冲动画 + 状态提示
+- 基于浏览器 Web Speech API（`webkitSpeechRecognition`），无需外部服务
+- 错误处理（权限拒绝、未检测到语音等）
+
 ---
 
 ## 5. 文件变更汇总
@@ -202,6 +213,7 @@
 | `frontend/src/App.vue` | ✅ 修改 | 回放分离、刷新恢复、自动停止、侧栏折叠、昼夜检测、speeches 传参 |
 | `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 点击查看发言、speech 弹窗 |
 | `frontend/src/components/LogsPanel.vue` | ✅ 修改 | 昼夜背景、笔记区域、可拖拽分割条 |
+| `frontend/src/components/HumanActionPanel.vue` | ✅ 修改 | 语音输入（🎤 按钮 + Web Speech API）|
 | `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
 | `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
 | `docs/modifications.md` | 🆕 新增 | 本文件 |
