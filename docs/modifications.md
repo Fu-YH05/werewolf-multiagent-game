@@ -200,31 +200,6 @@
 - 基于浏览器 Web Speech API（`webkitSpeechRecognition`），无需外部服务
 - 错误处理（权限拒绝、未检测到语音等）
 
-### 4.8 AI 语音合成（TTS）🔊
-
-**涉及文件**:
-- `engine/audio_manager.py`（🆕 新增）
-- `engine/game_engine.py`
-- `frontend/server.py`
-- `frontend/src/App.vue`
-- `frontend/src/components/PlayerCard.vue`
-- `requirements.txt`
-
-**改动**:
-| 文件 | 改动 |
-|------|------|
-| `engine/audio_manager.py` | 新增 TTS 管理模块，基于 edge-tts，9 个玩家固定声线（男女混合） |
-| `engine/game_engine.py` | 发言循环中异步生成 TTS 音频，`audio_url` 附加到日志，等待时长取 `max(step_delay, 音频时长+0.3)` |
-| `frontend/server.py` | 新增 `/audio/` 路由提供音频文件，配置 `AUDIO_DIR` |
-| `frontend/src/App.vue` | 新增隐藏 `<audio>` 播放器，`watch logs` 自动播放新语音，跟踪 `speakingPlayerId` |
-| `frontend/src/components/PlayerCard.vue` | 新增 `isSpeaking` prop，播放中绿色脉冲高亮 |
-| `requirements.txt` | 新增 `edge-tts>=6.0.0` |
-
-**声线分配**:
-- P1 Yunxi（男 · 阳光）、P2 Xiaoxiao（女 · 亲切）、P3 Yunjian（男 · 严肃）
-- P4 Xiaochen（女 · 冷静）、P5 Yunyang（男 · 专业）、P6 Xiaohan（女 · 温暖）
-- P7 Xiaomeng（女 · 活泼）、P8 Xiaomo（女 · 柔和）、P9 Xiaorui（女 · 可爱）
-
 ---
 
 ## 5. 文件变更汇总
@@ -239,10 +214,6 @@
 | `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 点击查看发言、speech 弹窗 |
 | `frontend/src/components/LogsPanel.vue` | ✅ 修改 | 昼夜背景、笔记区域、可拖拽分割条 |
 | `frontend/src/components/HumanActionPanel.vue` | ✅ 修改 | 语音输入（🎤 按钮 + Web Speech API）|
-| `engine/audio_manager.py` | 🆕 新增 | TTS 语音合成管理， edge-tts |
-| `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 添加 `isSpeaking` 高亮动画 |
-| `frontend/src/App.vue` | ✅ 修改 | 添加 TTS 音频播放器与自动播放 |
 | `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
-| `requirements.txt` | ✅ 修改 | 新增 edge-tts |
 | `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
 | `docs/modifications.md` | 🆕 新增 | 本文件 |

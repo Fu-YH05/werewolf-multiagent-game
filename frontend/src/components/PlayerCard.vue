@@ -5,7 +5,6 @@
       :class="{
         'opacity-50': !player.is_alive,
         'speech-available': speeches.length > 0,
-        'speaking-now': isSpeaking,
         'glow-border-green': player.is_alive && canSeeRole && isRole(player, '狼人'),
         'glow-border-purple': player.is_alive && canSeeRole && isRole(player, '平民'),
         'glow-border-blue': player.is_alive && canSeeRole && isRole(player, '预言家'),
@@ -130,10 +129,6 @@ const props = defineProps({
   speeches: {
     type: Array,
     default: () => []
-  },
-  isSpeaking: {
-    type: Boolean,
-    default: false
   }
 })
 
@@ -376,20 +371,6 @@ function getAbilityText(player) {
 }
 .speech-available:hover .player-avatar {
   box-shadow: 0 0 12px rgba(34, 211, 238, 0.5), 0 4px 15px rgba(79, 70, 229, 0.3);
-}
-
-/* 正在语音播放的高亮 */
-.speaking-now {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2);
-  transform: translateY(-3px);
-}
-.speaking-now .player-avatar {
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.6), 0 4px 15px rgba(79, 70, 229, 0.3);
-  animation: speak-pulse 0.8s ease-in-out infinite alternate;
-}
-@keyframes speak-pulse {
-  0% { box-shadow: 0 0 12px rgba(34, 197, 94, 0.4), 0 4px 15px rgba(79, 70, 229, 0.3); }
-  100% { box-shadow: 0 0 24px rgba(34, 197, 94, 0.7), 0 4px 15px rgba(79, 70, 229, 0.3); }
 }
 
 /* 发言弹窗遮罩 */

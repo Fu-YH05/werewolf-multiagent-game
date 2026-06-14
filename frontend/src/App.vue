@@ -91,7 +91,6 @@
               :show-role="isGameOver"
               :is-human-mode="isHumanMode"
               :speeches="playerSpeeches[player.id] || []"
-              :is-speaking="speakingPlayerId === player.id"
               @annotate="handleAnnotate"
             />
           </div>
@@ -154,9 +153,6 @@
       </div>
     </div>
     
-    <!-- 隐藏音频播放器（TTS 语音） -->
-    <audio ref="audioPlayerRef" @ended="onAudioEnded" @play="onAudioPlaying" style="display:none"></audio>
-
     <!-- 加载遮罩 -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -233,35 +229,6 @@ const rightCollapsed = ref(false)
 // 白天阶段检测
 const dayPhases = ['天亮请睁眼', '自由发言', '放逐投票', '游戏结束']
 const isDaytime = computed(() => dayPhases.includes(phase.value))
-
-// TTS 语音播放
-const audioPlayerRef = ref(null)
-const speakingPlayerId = ref(null)
-let lastAudioLogIndex = -1
-
-watch(() => logs.value.length, (newLen, oldLen) => {
-  if (!audioPlayerRef.value || viewingReplay.value) return
-  // 从新日志中找带有 audio_url 的发言
-  for (let i = Math.max(oldLen - 1, 0); i < newLen; i++) {
-    const log = logs.value[i]
-    if (log?.audio_url && i > lastAudioLogIndex) {
-      lastAudioLogIndex = i
-      const pid = log.player_id
-      if (pid) speakingPlayerId.value = pid
-      audioPlayerRef.value.src = log.audio_url
-      audioPlayerRef.value.play().catch(() => {})
-      break
-    }
-  }
-})
-
-function onAudioPlaying() {
-  // 已在 playing 中通过 speakingPlayerId 高亮
-}
-
-function onAudioEnded() {
-  speakingPlayerId.value = null
-}
 
 const emptyMessage = computed(() => {
   if (viewingReplay.value) return '观看回放中'

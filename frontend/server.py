@@ -25,10 +25,6 @@ FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__f
 # 项目根目录（基于 server.py 自身位置推导，不依赖 CWD）
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
-AUDIO_DIR = os.path.join(BASE_DIR, 'audio')
-
-# 确保音频目录存在
-os.makedirs(AUDIO_DIR, exist_ok=True)
 
 # 游戏状态存储
 current_game: Optional[WerewolfEngine] = None
@@ -56,7 +52,7 @@ def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay
             
             # 创建新游戏引擎
             player_names = ["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"]
-            config = {"step_delay": step_delay, "log_dir": LOG_DIR, "audio_dir": AUDIO_DIR}
+            config = {"step_delay": step_delay, "log_dir": LOG_DIR}
             with game_lock:
                 current_game = WerewolfEngine(player_names, config=config, human_player_index=human_player_index)
             print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}, 真人玩家: {human_player_index}")
@@ -412,12 +408,6 @@ def stop_game():
 
     print(f"[API] 游戏已停止, game_running={game_running}")
     return jsonify({"success": True, "message": "游戏已终止"})
-
-
-@app.route('/audio/<path:filename>')
-def serve_audio(filename):
-    """提供 TTS 音频文件"""
-    return send_from_directory(AUDIO_DIR, filename)
 
 
 @app.route('/api/health')
