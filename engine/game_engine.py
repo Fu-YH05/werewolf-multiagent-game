@@ -7,6 +7,8 @@ from enum import Enum
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any, Callable
 
+from engine.audio_manager import generate_speech
+
 
 class Role(Enum):
     VILLAGER = "平民"
@@ -94,6 +96,8 @@ class WerewolfEngine:
         self.step_delay = self.config.get("step_delay", 1.5)
         # 日志保存目录
         self.log_dir = self.config.get("log_dir", "logs")
+        # 音频文件目录
+        self.audio_dir = self.config.get("audio_dir", self.log_dir)
         # 人类玩家等待机制
         self._human_action_future: Optional[asyncio.Future] = None
         self._human_pending_action: Optional[Dict] = None
@@ -332,9 +336,23 @@ class WerewolfEngine:
         
         for p in alive_players:
             speech = await self.request_agent_decision(p, "speak", None)
-            self.log_event("SPEECH", f"{p.id}({p.name}) 发言: {speech}")
+            self.log_event("SPEECH", f"{p.id}({p.name}) 发言: {speech}", player_id=p.id)
             self.record_action(p.id, "speak", None, speech)
-            await asyncio.sleep(self.step_delay * 0.6)  # 发言间短延迟
+
+            # TTS 语音合成（异步后台生成）
+            audio_filename = f"{self.state.game_id}_{p.id}_{len(self.state.logs)}.mp3"
+            audio_file, audio_dur = await generate_speech(
+                speech, p.id, self.audio_dir, audio_filename
+            )
+            if audio_file:
+                self.state.logs[-1]["audio_url"] = f"/audio/{audio_file}"
+                self.state.logs[-1]["audio_duration_sec"] = audio_dur
+                if self.on_state_change:
+                    self.on_state_change(self.state)
+
+            # 等待时长：取 step_delay 和音频时长的较大值
+            wait = max(self.step_delay * 0.6, (audio_dur + 0.3) if audio_dur else self.step_delay * 0.6)
+            await asyncio.sleep(wait)
         
         self.state.phase = GamePhase.VOTE
         self.log_event("VOTE_START", "进入放逐投票阶段")
