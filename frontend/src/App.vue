@@ -173,7 +173,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { gameApi } from './services/api'
 import ControlPanel from './components/ControlPanel.vue'
 import GameInfoBar from './components/GameInfoBar.vue'
