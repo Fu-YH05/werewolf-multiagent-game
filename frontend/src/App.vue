@@ -372,8 +372,14 @@ function finishAudioItem(logId) {
 watch(() => logs.value, (newLogs) => {
   if (viewingReplay.value) return
   for (const log of newLogs) {
+    // SPEECH 类型：玩家发言
     if (log?.type === 'SPEECH' && log.player_id) {
       enqueueSpeechLog(log)
+    }
+    // 旁白类型（有 audio_url 且无 player_id 的系统广播）
+    const narratorTypes = ['GAME_START', 'NIGHT_START', 'WOLF_TURN', 'WITCH_TURN', 'SEER_TURN', 'ANNOUNCE', 'DISCUSS_START', 'VOTE_START', 'GAME_OVER']
+    if (narratorTypes.includes(log?.type) && log.audio_url) {
+      enqueueSpeechLog({ ...log, player_id: 'NARRATOR' })
     }
   }
 })
@@ -520,10 +526,13 @@ async function startGame(humanPlayerIndex = -1, stepDelay = 1.5) {
 
   try {
     const apiKey = controlPanelRef.value?.apiKey || ''
+    const useDoubaoTTS = controlPanelRef.value?.useDoubaoTTS || false
+    const doubaoAppid = controlPanelRef.value?.doubaoAppid || ''
+    const doubaoApiKey = controlPanelRef.value?.doubaoApiKey || ''
     isHumanMode.value = humanPlayerIndex >= 0
-    console.log('Starting game with API key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'None', 'Human:', humanPlayerIndex, 'Delay:', stepDelay)
+    console.log('Starting game with API key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'None', 'Human:', humanPlayerIndex, 'Delay:', stepDelay, 'DoubaoTTS:', useDoubaoTTS)
     
-    const response = await gameApi.startGame(apiKey, humanPlayerIndex, stepDelay)
+    const response = await gameApi.startGame(apiKey, humanPlayerIndex, stepDelay, useDoubaoTTS, doubaoAppid, doubaoApiKey)
     const data = response.data
     
     if (data.error) {

@@ -1,9 +1,10 @@
-"""edge-tts 语音合成管理器（免费，无需注册，即时生成）"""
+"""语音合成管理器：支持 edge-tts（免费）和豆包语音（火山引擎 TTS）"""
 import os
 import time
 import logging
 import asyncio
 import wave
+import requests
 from typing import Optional, List, Dict
 
 logger = logging.getLogger(__name__)
@@ -37,12 +38,43 @@ VOICE_STYLES = [
 ]
 
 
+# 豆包语音（火山引擎）TTS API 配置
+# 官方文档: https://www.volcengine.com/docs/6561/79820
+DOUBAO_API_URL = "https://openspeech.bytedance.com/api/v1/tts"
+# 豆包语音可选音色（全部AI使用同一音色时从这里随机选取）
+DOUBAO_VOICES = [
+    "BV001_streaming",   # 免费女声-通用
+    "BV002_streaming",   # 免费男声-通用
+    "BV005_streaming",   #
+    "BV007_streaming",   #
+    "BV019_streaming",   #
+    "BV021_streaming",   #
+    "BV033_streaming",   #
+    "BV034_streaming",   #
+    "BV051_streaming",   #
+    "BV056_streaming",   #
+    "BV112_streaming",   #
+    "BV113_streaming",   #
+    "BV115_streaming",   #
+    "BV119_streaming",   #
+    "BV700_streaming",   # 女声-温柔
+    "BV701_streaming",   # 男声-沉稳
+    "BV705_streaming",   #
+]
+# 旁白专用音色：豆包标准女声本音
+DOUBAO_NARRATOR_VOICE = "BV001_streaming"
+
+
 class TTSManager:
-    """edge-tts 管理器，无需模型加载，直接调用微软云服务"""
+    """语音合成管理器，支持 edge-tts 和豆包语音两种引擎"""
 
     def __init__(self, audio_dir: str = "./audio"):
         self.audio_dir = audio_dir
-        self._loaded = True  # edge-tts 无需加载，始终就绪
+        self._loaded = True
+        self.use_doubao = False
+        self.doubao_api_key = ""
+        self.doubao_appid = ""      # 豆包控制台获取的应用ID
+        self.doubao_cluster = "volcano_tts"  # 业务集群
         os.makedirs(audio_dir, exist_ok=True)
 
     def load(self) -> bool:
@@ -77,11 +109,15 @@ class TTSManager:
         if skip_empty and len(text.strip()) < 3:
             return None
 
-        try:
-            cleaned = self._clean_text(text)
-            if not cleaned:
-                return None
+        cleaned = self._clean_text(text)
+        if not cleaned:
+            return None
 
+        # 豆包语音模式 → 走火山引擎 API
+        if self.use_doubao and self.doubao_api_key:
+            return self._generate_doubao(cleaned, player_id)
+
+        try:
             voice = VOICE_MAP[speaker_idx % len(VOICE_MAP)]
             style = VOICE_STYLES[speaker_idx % len(VOICE_STYLES)]
 
@@ -145,6 +181,104 @@ class TTSManager:
                 return size / 48000.0  # 24kHz * 2bytes ≈ 48KB/s
             except Exception:
                 return 2.0  # 完全无法获取时默认为2秒
+
+    def _generate_doubao(self, text: str, player_id: str) -> Optional[Dict]:
+        """通过豆包语音（火山引擎）HTTP 非流式 API 生成语音
+        
+        官方文档: https://www.volcengine.com/docs/6561/79820
+        认证格式: Authorization: Bearer;{token} (分号分隔)
+        返回: JSON 中 data 字段为 base64 编码的音频
+        """
+        import uuid
+        import random
+        import base64
+
+        safe_id = player_id.replace("/", "_").replace("\\", "_")
+        timestamp = int(time.time() * 1000)
+        filename = f"{safe_id}_{timestamp}.wav"
+        filepath = os.path.join(self.audio_dir, filename)
+
+        # 旁白使用固定本音，AI 玩家随机选音色
+        if player_id == "NARRATOR":
+            voice = DOUBAO_NARRATOR_VOICE
+        else:
+            voice = random.choice(DOUBAO_VOICES)
+        reqid = uuid.uuid4().hex
+
+        # 认证: Bearer 和 token 之间用分号 ; 分隔
+        headers = {
+            "Authorization": f"Bearer;{self.doubao_api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "app": {
+                "appid": self.doubao_appid,
+                "token": self.doubao_api_key,
+                "cluster": "volcano_tts",   # 标准音色业务集群
+            },
+            "user": {
+                "uid": player_id,
+            },
+            "audio": {
+                "voice_type": voice,
+                "encoding": "wav",          # wav 用于非流式
+                "rate": 24000,
+                "speed_ratio": 1.0,
+                "volume_ratio": 1.0,
+                "pitch_ratio": 1.0,
+            },
+            "request": {
+                "reqid": reqid,
+                "text": text,
+                "text_type": "plain",
+                "operation": "query",       # query = 非流式
+                "silence_duration": "125",
+            },
+        }
+
+        start = time.time()
+        try:
+            resp = requests.post(
+                DOUBAO_API_URL,
+                json=payload,
+                headers=headers,
+                timeout=30,
+            )
+            resp.raise_for_status()
+            result = resp.json()
+
+            code = result.get("code")
+            if code != 3000:
+                logger.error(
+                    f"豆包TTS [{player_id}] 返回错误 code={code}: "
+                    f"{result.get('message', '未知')}"
+                )
+                return None
+
+            # 音频是 base64 编码的
+            audio_b64 = result.get("data", "")
+            if not audio_b64:
+                logger.error(f"豆包TTS [{player_id}] 返回空音频数据")
+                return None
+
+            audio_bytes = base64.b64decode(audio_b64)
+            with open(filepath, "wb") as f:
+                f.write(audio_bytes)
+
+            gen_time = time.time() - start
+            duration = self._get_wav_duration(filepath)
+            logger.info(
+                f"TTS-豆包 [{player_id}] {gen_time:.1f}s 生成 "
+                f"{duration:.1f}s 语音 ({voice}): {text[:30]}..."
+            )
+            return {"filepath": filepath, "duration": duration}
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"豆包TTS 请求失败 [{player_id}]: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"豆包TTS 处理失败 [{player_id}]: {e}")
+            return None
 
     def generate_batch(
         self, items: List[Dict]

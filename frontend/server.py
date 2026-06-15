@@ -58,7 +58,7 @@ game_initialized = threading.Event()  # 用于通知游戏初始化完成
 game_lock = threading.Lock()  # 用于保护共享变量的线程锁
 
 
-def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay: float = 1.5):
+def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay: float = 1.5, use_doubao_tts: bool = False, doubao_api_key: str = "", doubao_appid: str = "", doubao_cluster: str = "volcano_tts"):
     """在后台线程中运行游戏"""
     global current_game, game_running, game_logs_queue, game_init_error, game_initialized
     
@@ -77,7 +77,15 @@ def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay
             
             # 创建新游戏引擎
             player_names = ["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"]
-            config = {"step_delay": step_delay, "log_dir": LOG_DIR, "tts_manager": tts_manager}
+            config = {
+                "step_delay": step_delay,
+                "log_dir": LOG_DIR,
+                "tts_manager": tts_manager,
+                "use_doubao_tts": use_doubao_tts,
+                "doubao_api_key": doubao_api_key,
+                "doubao_appid": doubao_appid,
+                "doubao_cluster": doubao_cluster,
+            }
             with game_lock:
                 current_game = WerewolfEngine(player_names, config=config, human_player_index=human_player_index)
             print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}, 真人玩家: {human_player_index}")
@@ -159,6 +167,10 @@ def start_game():
         api_key = data.get('api_key') or os.getenv("DEEPSEEK_API_KEY", "")
         human_player_index = data.get('human_player_index', -1)  # -1 = 无真人, 0-8 = 真人位置
         step_delay = float(data.get('step_delay', 1.5))  # 步骤间延迟秒数
+        use_doubao_tts = data.get('use_doubao_tts', False)  # 是否启用豆包语音
+        doubao_api_key = data.get('doubao_api_key', '')  # 豆包语音 API Token
+        doubao_appid = data.get('doubao_appid', '')  # 豆包语音应用ID
+        doubao_cluster = data.get('doubao_cluster', 'volcano_tts')  # 豆包业务集群
         game_init_error = None
         
         # 重置状态
@@ -176,7 +188,7 @@ def start_game():
 
         # 在后台线程启动游戏
         print("[API] 创建游戏线程")
-        thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay), name="GameThread")
+        thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay, use_doubao_tts, doubao_api_key, doubao_appid, doubao_cluster), name="GameThread")
         thread.daemon = True
         print("[API] 启动游戏线程")
         thread.start()

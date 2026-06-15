@@ -19,6 +19,29 @@
         你将扮演第 {{ humanPlayerIndex + 1 }} 位玩家，其他 8 位由 AI 控制
       </p>
     </div>
+
+    <!-- 豆包语音模式 -->
+    <div class="doubao-toggle">
+      <label class="toggle-label">
+        <input type="checkbox" v-model="useDoubaoTTS" class="toggle-checkbox" />
+        <span class="toggle-text">🎵 豆包语音 (全部AI使用豆包TTS)</span>
+      </label>
+      <div v-if="useDoubaoTTS" class="mt-2">
+        <input
+          v-model="doubaoAppid"
+          type="text"
+          placeholder="输入豆包 AppID (控制台获取)"
+          class="api-input mb-1"
+        />
+        <input
+          v-model="doubaoApiKey"
+          type="text"
+          placeholder="输入豆包 Token (控制台获取)"
+          class="api-input"
+        />
+        <p class="toggle-hint">需在豆包语音控制台获取 AppID 和 Token</p>
+      </div>
+    </div>
     
     <!-- 游戏速度控制 -->
     <div class="speed-control mb-2">
@@ -128,12 +151,18 @@ const apiKey = ref('')
 const isHumanMode = ref(false)
 const humanPlayerIndex = ref(0)  // 默认真人坐在第1个位置
 const stepDelay = ref(1.5)  // 默认1.5秒/步
+const useDoubaoTTS = ref(false)  // 豆包语音开关
+const doubaoAppid = ref('4605841871')  // 豆包应用ID
+const doubaoApiKey = ref('ZCrTMDsGLAFQg_Y5QiPX5SldET-Sfg8_')  // 豆包语音 Token
 
 defineExpose({
   apiKey,
   isHumanMode,
   humanPlayerIndex,
-  stepDelay
+  stepDelay,
+  useDoubaoTTS,
+  doubaoAppid,
+  doubaoApiKey
 })
 
 watch(apiKey, (newVal) => {

@@ -36,11 +36,14 @@ export const gameApi = {
   // 健康检查
   checkHealth: () => api.get('/health'),
   
-  // 开始新游戏 (支持真人玩家参数、延迟配置)
-  startGame: (apiKey = '', humanPlayerIndex = -1, stepDelay = 1.5) => api.post('/game/start', { 
+  // 开始新游戏 (支持真人玩家参数、延迟配置、豆包语音)
+  startGame: (apiKey = '', humanPlayerIndex = -1, stepDelay = 1.5, useDoubaoTTS = false, doubaoAppid = '', doubaoApiKey = '') => api.post('/game/start', { 
     api_key: apiKey,
     human_player_index: humanPlayerIndex,
-    step_delay: stepDelay
+    step_delay: stepDelay,
+    use_doubao_tts: useDoubaoTTS,
+    doubao_appid: doubaoAppid,
+    doubao_api_key: doubaoApiKey
   }),
   
   // 获取游戏状态

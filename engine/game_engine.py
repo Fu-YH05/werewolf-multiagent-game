@@ -100,6 +100,12 @@ class WerewolfEngine:
         self._game_loop: Optional[asyncio.AbstractEventLoop] = None
         # TTS 管理器
         self.tts_manager = self.config.get("tts_manager", None)
+        # 豆包语音配置
+        if self.tts_manager:
+            self.tts_manager.use_doubao = self.config.get("use_doubao_tts", False)
+            self.tts_manager.doubao_api_key = self.config.get("doubao_api_key", "")
+            self.tts_manager.doubao_appid = self.config.get("doubao_appid", "")
+            self.tts_manager.doubao_cluster = self.config.get("doubao_cluster", "volcano_tts")
         # 停止请求标志
         self._stop_requested = False
         self._initialize_llm_client()
@@ -138,6 +144,31 @@ class WerewolfEngine:
         return self.tts_manager.generate(
             text, player_id, self._get_speaker_idx(player_id)
         )
+
+    def _generate_narrator_tts(self, text: str) -> Optional[Dict]:
+        """为旁白生成语音（使用固定中性声线）"""
+        if not self.tts_manager or not text:
+            return None
+        result = self.tts_manager.generate(text, "NARRATOR", 0)
+        if result:
+            return result
+        import time
+        time.sleep(1)
+        return self.tts_manager.generate(text, "NARRATOR", 0)
+
+    async def _narrator_log(self, event_type: str, content: str, hidden: bool = False):
+        """旁白日志 + 异步 TTS 生成"""
+        loop = asyncio.get_event_loop()
+        try:
+            tts_result = await loop.run_in_executor(None, self._generate_narrator_tts, content)
+        except Exception:
+            tts_result = None
+
+        audio_url = ""
+        if tts_result:
+            audio_url = self.tts_manager.get_audio_url(tts_result["filepath"])
+
+        self.log_event(event_type, content, hidden=hidden, audio_url=audio_url)
 
     def log_event(self, event_type: str, content: str, hidden: bool = False, player_id: Optional[str] = None, audio_url: Optional[str] = None):
         import uuid
@@ -214,7 +245,7 @@ class WerewolfEngine:
     async def run_game_loop(self):
         self._game_loop = asyncio.get_running_loop()
         self.assign_roles()
-        self.log_event("GAME_START", "游戏开始！")
+        await self._narrator_log("GAME_START", "游戏开始！")
         await asyncio.sleep(self.step_delay)
 
         try:
@@ -247,14 +278,14 @@ class WerewolfEngine:
         self.state.phase = GamePhase.GAME_OVER
         self.state.end_time = datetime.now()
         self.state.winner = self.winner
-        self.log_event("GAME_OVER", f"游戏结束！胜利者是: {self.winner}")
+        await self._narrator_log("GAME_OVER", f"游戏结束！胜利者是: {self.winner}")
 
         self.save_game_log()
         return self.state
 
     async def run_night_phase(self):
         self.state.phase = GamePhase.NIGHT_START
-        self.log_event("NIGHT_START", "天黑请闭眼...")
+        await self._narrator_log("NIGHT_START", "天黑请闭眼...")
         await asyncio.sleep(self.step_delay)
         
         self.state.night_killed, self.state.witch_saved, self.state.witch_poisoned = None, False, None
@@ -262,6 +293,7 @@ class WerewolfEngine:
         wolves = self.get_wolves()
         if wolves:
             self.state.phase = GamePhase.WOLF_KILL
+            await self._narrator_log("WOLF_TURN", "狼人请睁眼，请选择今晚的击杀目标")
             # 清空本轮狼队聊天
             self.state.wolf_chat = []
             
@@ -298,6 +330,7 @@ class WerewolfEngine:
         witch = next((p for p in self.get_alive_players() if p.role == Role.WITCH), None)
         if witch:
             self.state.phase = GamePhase.WITCH_ACT
+            await self._narrator_log("WITCH_TURN", "女巫请睁眼，你有一瓶解药和一瓶毒药")
             dec = await self.request_agent_decision(witch, "witch", self.state.night_killed)
             if dec == "save" and witch.has_antidote:
                 self.state.witch_saved, witch.has_antidote = True, False
@@ -313,6 +346,7 @@ class WerewolfEngine:
         seer = next((p for p in self.get_alive_players() if p.role == Role.SEER), None)
         if seer:
             self.state.phase = GamePhase.SEER_ACT
+            await self._narrator_log("SEER_TURN", "预言家请睁眼，请选择查验目标")
             tgt = await self.request_agent_decision(seer, "seer", self.get_alive_players())
             tgt_role = self.state.players[tgt].role
             res = "狼人" if tgt_role == Role.WEREWOLF else "好人"
@@ -329,8 +363,6 @@ class WerewolfEngine:
             await asyncio.sleep(self.step_delay)
 
     async def run_day_phase(self):
-        with open("C:/Users/aaa/AppData/Local/Temp/game_trace.txt", "a", encoding="utf-8") as _f:
-            _f.write(f"run_day_phase STARTED\n")
         self.state.phase = GamePhase.DAY_START
         deads = []
         
@@ -344,14 +376,14 @@ class WerewolfEngine:
             self._handle_death(d)
         
         dead_names = ",".join([self.state.players[d].name for d in deads]) if deads else "平安夜"
-        self.log_event("ANNOUNCE", f"昨晚死亡: {dead_names}")
+        await self._narrator_log("ANNOUNCE", f"昨晚死亡: {dead_names}")
         await asyncio.sleep(self.step_delay)
         
         if self.check_victory():
             return
         
         self.state.phase = GamePhase.DISCUSS
-        self.log_event("DISCUSS_START", "进入自由发言阶段")
+        await self._narrator_log("DISCUSS_START", "进入自由发言阶段")
         await asyncio.sleep(self.step_delay)
         
         alive_players = self.get_alive_players()
@@ -362,8 +394,6 @@ class WerewolfEngine:
             self.log_event("INFO", f"首轮发言随机顺序: {','.join([p.id for p in alive_players])}")
         
         for p in alive_players:
-            with open("C:/Users/aaa/AppData/Local/Temp/game_trace.txt", "a", encoding="utf-8") as _f:
-                _f.write(f"ABOUT_TO_SPEAK [{p.id}]\n")
             speech = await self.request_agent_decision(p, "speak", None)
             print(f"[TTS-DEBUG] [{p.id}] 发言文本{len(speech)}字: {speech[:50]}", flush=True)
 
@@ -392,7 +422,7 @@ class WerewolfEngine:
             await asyncio.sleep(actual_wait)
         
         self.state.phase = GamePhase.VOTE
-        self.log_event("VOTE_START", "进入放逐投票阶段")
+        await self._narrator_log("VOTE_START", "进入放逐投票阶段")
         await asyncio.sleep(self.step_delay)
         
         votes = {}
