@@ -3,19 +3,23 @@ import json
 import os
 import sys
 import threading
+import re
+import uuid
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 # 修复 Windows GBK 编码问题
 if sys.stdout.encoding and sys.stdout.encoding.lower() in ('gbk', 'gb2312', 'cp936'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 from typing import Optional, Dict, List
-from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask import Flask, render_template, jsonify, request, send_from_directory, send_file
 from flask_cors import CORS
 import queue
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from engine.game_engine import WerewolfEngine, GameState, Role
+from engine.tts_manager import TTSManager
 
 app = Flask(__name__, static_folder=None)
 CORS(app)
@@ -25,6 +29,24 @@ FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__f
 # 项目根目录（基于 server.py 自身位置推导，不依赖 CWD）
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
+# 音频文件目录
+AUDIO_DIR = os.path.join(BASE_DIR, 'audio')
+
+# TTS 管理器（全局单例，edge-tts 无需模型加载）
+tts_manager = TTSManager(audio_dir=AUDIO_DIR)
+
+# TTS 结果存储: {game_id: {log_id: audio_url}}
+# 后台线程按 log_id 回填，API 端点按 log_id 合并，彻底消除索引错位
+tts_results: Dict[str, Dict[str, str]] = {}
+tts_results_lock = threading.Lock()
+
+# TTS 线程池（限制并发 3，防止被微软边缘节点风控）
+tts_pool = ThreadPoolExecutor(max_workers=3, thread_name_prefix="TTS")
+
+# 游戏活跃标志（TTS 线程检查此标志，游戏停止后丢弃结果）
+game_active = False
+game_active_lock = threading.Lock()
 
 # 游戏状态存储
 current_game: Optional[WerewolfEngine] = None
@@ -46,13 +68,16 @@ def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay
         try:
             game_init_error = None
             game_running = True
+            global game_active
+            with game_active_lock:
+                game_active = True
             game_initialized.clear()  # 重置事件
             
             print("[游戏引擎] 开始创建游戏...")
             
             # 创建新游戏引擎
             player_names = ["小刚", "小红", "小明", "小李", "张三", "李四", "王五", "赵六", "孙七"]
-            config = {"step_delay": step_delay, "log_dir": LOG_DIR}
+            config = {"step_delay": step_delay, "log_dir": LOG_DIR, "tts_manager": tts_manager}
             with game_lock:
                 current_game = WerewolfEngine(player_names, config=config, human_player_index=human_player_index)
             print(f"[游戏引擎] 游戏已创建，ID: {current_game.state.game_id}, 真人玩家: {human_player_index}")
@@ -90,6 +115,8 @@ def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay
             game_initialized.set()  # 即使出错也触发事件
         finally:
             game_running = False
+            with game_active_lock:
+                game_active = False
     
     # 在新的事件循环中运行
     loop = asyncio.new_event_loop()
@@ -140,9 +167,13 @@ def start_game():
         game_logs_queue.queue.clear()
         game_states.clear()
         game_initialized.clear()
-        
+        with tts_results_lock:
+            tts_results.clear()
+
         print(f"[API] 收到开始游戏请求，API Key: {api_key[:10] if api_key else 'None'}...")
-        
+
+        # edge-tts 无需加载，即时可用
+
         # 在后台线程启动游戏
         print("[API] 创建游戏线程")
         thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay), name="GameThread")
@@ -225,13 +256,173 @@ def start_game():
         }), 500
 
 
+# ---------------------------------------------------------------------------
+# 文本清洗：去除 Markdown、XML 标签、URL 等不适宜 TTS 朗读的内容
+# ---------------------------------------------------------------------------
+def sanitize_tts_text(text: str) -> str:
+    """清理文本中的 Markdown/XML/code/URL，保留口语化内容"""
+    if not text:
+        return ""
+    # 移除 XML/HTML 标签（LLM 输出的 <VOTE> 等）
+    text = re.sub(r'<[^>]+>', '', text)
+    # 移除 markdown 代码块
+    text = re.sub(r'```[\w]*\n?.*?```', '', text, flags=re.DOTALL)
+    # 移除行内代码
+    text = re.sub(r'`[^`]+`', '', text)
+    # 移除 URL
+    text = re.sub(r'https?://[^\s]+', '', text)
+    # 移除邮箱
+    text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '', text)
+    # 移除 markdown 符号和特殊括号（# * _ ~ 【】等）
+    text = re.sub(r'[#*_~`\[\]()>|【】「」]', '', text)
+    # 压缩空白
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+def extract_speech_text(content: str) -> str:
+    """从日志内容中提取发言文本（去除 '发言:' 前缀）"""
+    m = re.search(r"发言[:：]\s*(.*)", content)
+    text = m.group(1) if m else content
+    return sanitize_tts_text(text)
+
+
+def split_long_speech(text: str, max_chars: int = 120) -> list:
+    """长文本按句号拆分，防止 edge-tts 合成超时"""
+    if len(text) <= max_chars:
+        return [text]
+    # 按句号/问号/叹号切割，每段不超过 max_chars
+    parts = []
+    sentences = re.split(r'([。！？!?])', text)
+    buf = ""
+    for i in range(0, len(sentences), 2):
+        seg = sentences[i]
+        punct = sentences[i + 1] if i + 1 < len(sentences) else ""
+        chunk = seg + punct
+        if len(buf) + len(chunk) <= max_chars:
+            buf += chunk
+        else:
+            if buf:
+                parts.append(buf.strip())
+            buf = chunk
+    if buf:
+        parts.append(buf.strip())
+    return parts if parts else [text]
+
+
+# ---------------------------------------------------------------------------
+# TTS 后台生成：按 log_id 回填，支持线程池和长文本拆分
+# ---------------------------------------------------------------------------
+def _tts_gen_for_game(gid, logs):
+    """为指定游戏的 SPEECH 日志逐个生成 TTS（在后台线程池调度）"""
+    if not tts_manager.is_loaded:
+        return
+
+    tasks = []
+    for log in logs:
+        if log.get("type") != "SPEECH" or not log.get("player_id"):
+            continue
+        # 游戏引擎同步生成时已设置 audio_url，无需再生成
+        if log.get("audio_url"):
+            continue
+        log_id = log.get("log_id")
+        if not log_id:
+            continue
+        with tts_results_lock:
+            if gid in tts_results and log_id in tts_results[gid]:
+                continue
+
+        player_id = log["player_id"]
+        speech_text = extract_speech_text(log.get("content", ""))
+        if len(speech_text) < 3:
+            with tts_results_lock:
+                tts_results.setdefault(gid, {})[log_id] = ""
+            continue
+
+        try:
+            idx = max(0, min(int(player_id.replace("P", "")) - 1, 8))
+        except ValueError:
+            idx = 0
+
+        tasks.append((log_id, player_id, speech_text, idx))
+
+    if not tasks:
+        return
+
+    def gen_one(log_id, player_id, text, idx):
+        """单个 TTS 生成任务（在 ThreadPoolExecutor 中运行）"""
+        # 长文本拆分为多段
+        segments = split_long_speech(text)
+        urls = []
+        for seg_text in segments:
+            with game_active_lock:
+                if not game_active:
+                    print(f"[TTS] 🛑 [{player_id}] 游戏已停止，丢弃")
+                    return None
+            print(f"[TTS] ⏳ [{player_id}] {len(seg_text)}字: {seg_text[:40]}...")
+            result = tts_manager.generate(seg_text, player_id, idx)
+            if result:
+                urls.append(f"/api/audio/{os.path.basename(result['filepath'])}")
+            # 生成后不再检查 game_active：已生成的音频总是保存
+            # （即使游戏结束，回放时仍可用）
+
+        if urls:
+            # 多段音频用逗号拼接（前端按逗号拆开依次播放）
+            combined = ",".join(urls)
+            with tts_results_lock:
+                tts_results.setdefault(gid, {})[log_id] = combined
+            print(f"[TTS] ✅ [{player_id}] {len(urls)}段音频 -> {combined[:60]}...")
+        else:
+            with tts_results_lock:
+                tts_results.setdefault(gid, {})[log_id] = ""
+            print(f"[TTS] ❌ [{player_id}] 生成失败")
+
+    # 提交到线程池（限制并发3）
+    for task in tasks:
+        tts_pool.submit(gen_one, *task)
+
+
+def try_generate_tts(game_id):
+    """检查游戏是否有未处理的 SPEECH 日志，有则启动 TTS 生成"""
+    if not tts_manager.is_loaded:
+        return
+    with game_lock:
+        if game_id not in game_states:
+            return
+        logs = list(game_states[game_id].logs)
+
+    # 按 log_id 检查是否有需要 TTS 但尚未生成的
+    # （新游戏由 game_engine 同步生成并已携带 audio_url，跳过）
+    pending = False
+    for log in logs:
+        if log.get("type") == "SPEECH" and log.get("player_id"):
+            # 如果日志已有 audio_url（由 game_engine 同步生成），跳过
+            if log.get("audio_url"):
+                continue
+            log_id = log.get("log_id")
+            if not log_id:
+                continue
+            with tts_results_lock:
+                if game_id not in tts_results or log_id not in tts_results[game_id]:
+                    pending = True
+                    break
+    if not pending:
+        return
+
+    # 后台提交（由 ThreadPoolExecutor 管理线程，不再手动 new Thread）
+    tts_pool.submit(_tts_gen_for_game, game_id, logs)
+    print(f"[TTS] 📤 提交 {game_id[:12]} 的 TTS 任务至线程池")
+
+
 @app.route('/api/game/<game_id>/state')
 def get_game_state(game_id: str):
     """获取游戏状态"""
     if game_id in game_states:
         state = game_states[game_id]
-        print(f"[API] 获取游戏状态：{game_id}, 阶段：{state.phase.value}")
-        
+
+        # 触发后台 TTS 生成（不阻塞响应）
+        try_generate_tts(game_id)
+
         players_data = []
         is_human_mode = False
         human_player_id = None
@@ -258,31 +449,42 @@ def get_game_state(game_id: str):
         if is_human_mode and human_is_wolf:
             for pi in players_data:
                 if pi["role"] == "狼人":
-                    pi["is_wolf_teammate"] = True  # 前端据此显示身份
+                    pi["is_wolf_teammate"] = True
                 else:
-                    pi["role"] = None  # 非狼队友仍然隐藏身份
-        
-        # 人类玩家模式下，过滤掉上帝视角日志（但保留真人玩家自己的行动）
+                    pi["role"] = None
+
+        # 人类玩家模式下，过滤掉上帝视角日志
         raw_logs = state.logs[-100:]
         if is_human_mode:
             human_player_id = next(
-                (p.id for p in state.players.values() 
-                 if hasattr(p, 'is_human') and p.is_human), 
+                (p.id for p in state.players.values()
+                 if hasattr(p, 'is_human') and p.is_human),
                 None
             )
             logs = [
-                log for log in raw_logs 
-                if not log.get("hidden", False) 
+                log for log in raw_logs
+                if not log.get("hidden", False)
                 or log.get("player_id") == human_player_id
             ]
         else:
             logs = raw_logs
-        
+
+        # 合并后台 TTS 结果到日志中（按 log_id 匹配，绝对精确）
+        with tts_results_lock:
+            if game_id in tts_results:
+                game_tts = tts_results[game_id]
+                for log in logs:
+                    lid = log.get("log_id")
+                    if lid and lid in game_tts:
+                        url = game_tts[lid]
+                        if url:  # 非空才设置
+                            log["audio_url"] = url
+
         # 人类玩家待处理操作
         human_pending = None
         if current_game and hasattr(current_game, 'get_human_prompt'):
             human_pending = current_game.get_human_prompt()
-        
+
         return jsonify({
             "game_id": state.game_id,
             "day": state.day,
@@ -291,11 +493,11 @@ def get_game_state(game_id: str):
             "players": players_data,
             "logs": logs,
             "vote_results": getattr(state, 'vote_results', []),
-            "is_over": state.phase.value == "GAME_OVER",
+            "is_over": state.phase.value == "游戏结束",
             "human_pending_action": human_pending,
             "start_time": state.start_time.isoformat() if state.start_time else None
         })
-    
+
     print(f"[API] 游戏状态未找到：{game_id}")
     return jsonify({"error": "Game not found", "code": "NOT_FOUND"}), 404
 
@@ -428,6 +630,11 @@ def health_check():
             "has_game": current_game is not None,
             "has_state": current_game.state is not None if current_game else False,
             "error": game_init_error
+        },
+        "tts": {
+            "type": "edge-tts",
+            "ready": True,
+            "results_count": sum(len(v) for v in tts_results.values()) if tts_results else 0
         }
     })
 
@@ -538,6 +745,17 @@ def get_roles_info():
     return jsonify(roles)
 
 
+@app.route('/api/audio/<path:filename>')
+def serve_audio(filename):
+    """提供 TTS 生成的音频文件"""
+    safe_path = os.path.normpath(os.path.join(AUDIO_DIR, filename))
+    if not safe_path.startswith(os.path.normpath(AUDIO_DIR)):
+        return jsonify({"error": "Invalid path"}), 403
+    if os.path.exists(safe_path):
+        return send_file(safe_path, mimetype='audio/wav')
+    return jsonify({"error": "Audio not found"}), 404
+
+
 @app.route('/<path:filename>')
 def serve_static(filename):
     """SPA catch-all：未匹配路由返回前端页面"""
@@ -557,5 +775,7 @@ if __name__ == '__main__':
     print(f"📍 外部访问：http://127.0.0.1:5000")
     print(f"📍 健康检查：http://localhost:5000/api/health")
     print("=" * 60)
-    
+    print("🎤 TTS: edge-tts (即时可用，无需注册)")
+    print("=" * 60)
+
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)

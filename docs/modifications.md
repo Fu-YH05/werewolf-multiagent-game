@@ -217,3 +217,132 @@
 | `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
 | `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
 | `docs/modifications.md` | 🆕 新增 | 本文件 |
+| `engine/tts_manager.py` | ✅ 重写 | ChatTTS → edge-tts，返回 `{filepath, duration}` 格式 |
+| `frontend/server.py` | ✅ 修改 | log_id 匹配、ThreadPoolExecutor、文本清洗、game_active 生命周期 |
+| `frontend/src/App.vue` | ✅ 重写 | 状态机音频队列、3s 超时、freshness 检查、标签清洗 |
+| `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 呼吸灯动画（3层CSS：光环+缩放+环脉冲）|
+| `agents/role_agents.py` | ✅ 修改 | 发言提示词更口语化（语气词、短句、示例） |
+| `requirements.txt` | ✅ 修改 | 移除 ChatTTS/torch/soundfile，添加 edge-tts |
+
+---
+
+## 6. TTS v2：ChatTTS → edge-tts 迁移
+
+### 6.1 背景
+
+ChatTTS 本地生成质量极佳，但在 CPU 上推理耗时 10-180 秒/条，完全无法满足实时游戏需求。Azure TTS 注册受阻，因此选用 edge-tts（调用微软 Edge 免费云服务，与 Azure TTS 相同神经语音品质）。
+
+### 6.2 迁移内容
+
+- `engine/tts_manager.py`：重写为 edge-tts 封装，无模型加载、无注册要求
+- 9 种中文神经语音对应 9 个玩家角色
+- 语速/音高微调（VOICE_STYLES）增加个性区分
+- 返回值从 `str`（文件路径）改为 `Dict{"filepath","duration"}`，支持游戏引擎同步等待
+- 新增 `_get_wav_duration()`：从 WAV 头读取时长
+- 新增 `generate_batch()` 批量接口
+
+### 6.3 相关清理
+
+- `chattts_models/` 目录（1.2GB）已删除
+- `frontend-react/` 目录（82MB）已删除
+- `requirements.txt`：移除 `ChatTTS`、`torch`、`soundfile`，添加 `edge-tts`
+
+---
+
+## 7. 日志索引重构：log_id 唯一标识
+
+### 7.1 痛点
+
+TTS 线程按日志列表的 `index` 回填 `audio_url`，但前端/后端经过过滤（人类模式隐藏日志）后索引偏移，导致音频匹配错位。
+
+### 7.2 修复
+
+- `engine/game_engine.py`：`log_event()` 中用 `uuid.uuid4().hex[:12]` 为每条日志生成 `log_id`
+- `frontend/server.py`：`tts_results` 存储键从 `int`（索引）改为 `str`（log_id）
+- 状态端点按 `log_id` 精确合并，不再依赖 `ol is log` 对象身份比较
+- 前端 `enqueueSpeechLog()` 用 `log_id` 去重
+
+---
+
+## 8. 前端音频队列状态机
+
+### 8.1 旧方案问题
+
+- 数组 `audioQueue` + `isPlaying` 布尔，时序竞争频繁
+- 对象身份 `ol is log` 匹配易错位
+- 15 秒超时（ChatTTS 遗留）太长
+- 降级播放后 edge-tts 音频到达会重复播放
+
+### 8.2 新方案
+
+- 状态机：`PENDING → PLAYING → DONE`，每个 `log_id` 仅处理一次
+- `playedLogIds` / `fallbackLogIds` Set 双重去重
+- 3 秒降级超时（匹配 edge-tts 生成速度）
+- 音频 URL 到达后自动取消降级定时器
+- 降级播放后丢弃后续到达的 edge-tts 音频
+
+### 8.3 Freshness 保鲜检查
+
+- 队列处理器检查 `item.day < day.value`，过时发言自动跳过
+- 防止 mock 模式下游戏跑完、音频才到达的"阴魂不散"问题
+
+### 8.4 标签清洗
+
+- 前端 `cleanSpeechText()` 增加 `replace(/<[^>]+>/g, '')` 和 Markdown 过滤
+- 后端 `sanitize_tts_text()` 同步增加 `【】` 过滤
+- 解决浏览器 SpeechSynthesis 降级时读出 `<VOTE>`、`【发言】` 等乱码
+
+---
+
+## 9. 游戏引擎同步 TTS
+
+### 9.1 改造前
+
+```python
+# 异步：server.py 后台线程生成，游戏引擎不等待
+audio_url = ""  # 占位
+self.log_event("SPEECH", ..., audio_url=audio_url)
+await asyncio.sleep(self.step_delay * 0.6)
+```
+
+### 9.2 改造后
+
+```python
+# 同步：游戏引擎等 TTS 生成完成再继续
+loop = asyncio.get_event_loop()
+tts_result = await loop.run_in_executor(None, self._generate_tts, speech, p.id)
+if tts_result:
+    audio_url = self.tts_manager.get_audio_url(tts_result["filepath"])
+    wait_time = float(tts_result.get("duration", 0))
+self.log_event("SPEECH", ..., audio_url=audio_url)
+await asyncio.sleep(max(2.0, wait_time + 0.5))  # 等音频播完
+```
+
+### 9.3 效果
+
+- 每条发言生成 TTS 后，日志直接带 `audio_url`，无需异步回填
+- 游戏引擎等待音频时长 + 0.5 秒缓冲后才继续下一位
+- TTS 失败时至少等 2 秒，防止日志刷屏
+- 重试机制：edge-tts 云端瞬断时自动重试一次
+
+---
+
+## 10. 其他优化
+
+### 10.1 后端并发控制
+
+- `concurrent.futures.ThreadPoolExecutor(max_workers=3)` 取代原始 `threading.Thread`
+- 限制并发请求数，防止被微软边缘节点风控
+- `game_active` 生命周期标志：游戏停止后不再启动新 TTS，新游戏清空旧结果
+
+### 10.2 LLM 提示词优化
+
+- 发言提示增加"多用语气词（啊、呢、吧、嘛、哦）"
+- "禁止列点、禁止编号、用短句"
+- 增加口语化示例
+
+### 10.3 呼吸灯动画
+
+- 3 层 CSS 动画：`breathe-card`（外发光）+ `breathe-avatar`（头像缩放）+ `breathe-ring`（环脉冲）
+- 发言时玩家名称变色 + 文字发光
+- `.player-avatar` 增加 `position: relative` 支持伪元素

@@ -1,0 +1,198 @@
+"""edge-tts 语音合成管理器（免费，无需注册，即时生成）"""
+import os
+import time
+import logging
+import asyncio
+import wave
+from typing import Optional, List, Dict
+
+logger = logging.getLogger(__name__)
+
+# 多角色声线映射到 edge-tts 的不同语音
+# edge-tts 使用微软 Edge 的免费 TTS 服务，与 Azure TTS 相同神经语音品质
+VOICE_MAP = [
+    "zh-CN-XiaoxiaoNeural",    # P1 冷静理性预言家 → 温柔女声
+    "zh-CN-XiaoyiNeural",      # P2 活泼开朗少女 → 活泼女声
+    "zh-CN-YunyangNeural",     # P3 憨厚老实中年人 → 厚重男声
+    "zh-CN-XiaochenNeural",    # P4 温柔体贴女生 → 自然女声
+    "zh-CN-YunjianNeural",     # P5 粗犷豪爽汉子 → 沉稳男声
+    "zh-CN-XiaoshuangNeural",  # P6 古灵精怪小个子 → 元气女声
+    "zh-CN-YunxiNeural",       # P7 沉默寡言青年 → 阳光男声
+    "zh-CN-XiaomoNeural",      # P8 成熟稳重女性 → 柔和知性女声
+    "zh-CN-XiaoyouNeural",     # P9 淘气顽皮小孩 → 可爱儿童音
+]
+
+# 语速/音高偏移（可微调角色个性）
+# 值范围: rate -50% ~ +50%, pitch -50Hz ~ +50Hz
+VOICE_STYLES = [
+    {},                                                     # P1 默认
+    {"rate": "+15%"},                                       # P2 语速偏快
+    {"rate": "-10%", "pitch": "-5Hz"},                      # P3 语速偏慢，音高偏低
+    {"rate": "-5%"},                                        # P4 略慢
+    {"rate": "-5%", "pitch": "-10Hz"},                      # P5 低沉
+    {"rate": "+20%", "pitch": "+10Hz"},                     # P6 快语速高音
+    {"rate": "-10%"},                                       # P7 慢语速平淡
+    {"rate": "0%"},                                         # P8 默认
+    {"rate": "+25%", "pitch": "+20Hz"},                     # P9 快语速尖细
+]
+
+
+class TTSManager:
+    """edge-tts 管理器，无需模型加载，直接调用微软云服务"""
+
+    def __init__(self, audio_dir: str = "./audio"):
+        self.audio_dir = audio_dir
+        self._loaded = True  # edge-tts 无需加载，始终就绪
+        os.makedirs(audio_dir, exist_ok=True)
+
+    def load(self) -> bool:
+        """兼容接口：edge-tts 无需加载"""
+        return True
+
+    def warmup(self) -> bool:
+        """兼容接口：edge-tts 无需预热"""
+        return True
+
+    def generate(
+        self,
+        text: str,
+        player_id: str = "P1",
+        speaker_idx: int = 0,
+        skip_empty: bool = True,
+    ) -> Optional[Dict]:
+        """
+        生成语音文件
+
+        Args:
+            text: 要合成的文本
+            player_id: 玩家ID（用于文件名）
+            speaker_idx: 角色声线索引 (0-8)
+            skip_empty: 跳过空文本
+
+        Returns:
+            {"filepath": str, "duration": float} 或 None（失败时）
+        """
+        if not text or not text.strip():
+            return None
+        if skip_empty and len(text.strip()) < 3:
+            return None
+
+        try:
+            cleaned = self._clean_text(text)
+            if not cleaned:
+                return None
+
+            voice = VOICE_MAP[speaker_idx % len(VOICE_MAP)]
+            style = VOICE_STYLES[speaker_idx % len(VOICE_STYLES)]
+
+            # 构建 edge-tts Communicate
+            import edge_tts
+            communicate = edge_tts.Communicate(cleaned, voice=voice)
+
+            # 如果设置了语速/音高，使用 SSML
+            if style:
+                rate = style.get("rate", "0%")
+                pitch = style.get("pitch", "0Hz")
+                ssml = (
+                    f'<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"'
+                    f' xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="zh-CN">'
+                    f'<voice name="{voice}">'
+                    f'<prosody rate="{rate}" pitch="{pitch}">'
+                    f'{cleaned}'
+                    f'</prosody>'
+                    f'</voice>'
+                    f'</speak>'
+                )
+                communicate = edge_tts.Communicate(ssml, voice=voice)
+
+            # 生成音频文件
+            start = time.time()
+            safe_id = player_id.replace("/", "_").replace("\\", "_")
+            timestamp = int(time.time() * 1000)
+            filename = f"{safe_id}_{timestamp}.wav"
+            filepath = os.path.join(self.audio_dir, filename)
+
+            # edge_tts 是异步的，在同步包装器中运行
+            asyncio.run(communicate.save(filepath))
+
+            gen_time = time.time() - start
+            duration = self._get_wav_duration(filepath)
+            file_size = os.path.getsize(filepath) if os.path.exists(filepath) else 0
+
+            logger.info(
+                f"TTS [{player_id}] {gen_time:.1f}s 生成 "
+                f"{duration:.1f}s 语音 ({voice}): {cleaned[:30]}..."
+            )
+
+            return {"filepath": filepath, "duration": duration}
+
+        except Exception as e:
+            logger.error(f"TTS 生成失败 [{player_id}] ({voice}): {e}")
+            return None
+
+    @staticmethod
+    def _get_wav_duration(filepath: str) -> float:
+        """从 WAV 文件头读取音频时长（秒）"""
+        try:
+            with wave.open(filepath, 'r') as wf:
+                frames = wf.getnframes()
+                rate = wf.getframerate()
+                return frames / rate if rate > 0 else 0.0
+        except Exception:
+            # 回退：根据文件大小估算（16-bit mono 24kHz）
+            try:
+                size = os.path.getsize(filepath)
+                return size / 48000.0  # 24kHz * 2bytes ≈ 48KB/s
+            except Exception:
+                return 2.0  # 完全无法获取时默认为2秒
+
+    def generate_batch(
+        self, items: List[Dict]
+    ) -> List[Optional[Dict]]:
+        """
+        批量生成语音
+
+        Args:
+            items: [{"text": str, "player_id": str, "speaker_idx": int}, ...]
+
+        Returns:
+            [{"filepath": str, "duration": float}, ...] 列表
+        """
+        return [self.generate(**item) for item in items]
+
+    def _clean_text(self, text: str) -> str:
+        """清理 TTS 文本（移除 URL、代码等不适宜朗读的内容）"""
+        import re
+        text = re.sub(r'https?://[^\s]+', '', text)
+        text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '', text)
+        text = re.sub(r'```[\w]*\n?.*?```', '', text, flags=re.DOTALL)
+        text = re.sub(r'<[^>]+>', '', text)
+        # 移除 markdown 标记
+        text = re.sub(r'\*\*', '', text)
+        text = re.sub(r'[#*_~`]', '', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        if not text:
+            return ""
+        return text
+
+    def cleanup_old_files(self, max_age_seconds: int = 3600):
+        """清理过期的临时音频文件"""
+        now = time.time()
+        for f in os.listdir(self.audio_dir):
+            fpath = os.path.join(self.audio_dir, f)
+            if os.path.isfile(fpath) and (now - os.path.getmtime(fpath)) > max_age_seconds:
+                try:
+                    os.remove(fpath)
+                except OSError:
+                    pass
+
+    def get_audio_url(self, filepath: str) -> str:
+        """获取音频文件的 URL 路径"""
+        if not filepath:
+            return ""
+        filename = os.path.basename(filepath)
+        return f"/api/audio/{filename}"
+
+    @property
+    def is_loaded(self) -> bool:
+        return self._loaded

@@ -5,6 +5,7 @@
       :class="{
         'opacity-50': !player.is_alive,
         'speech-available': speeches.length > 0,
+        'speaking-now': isSpeaking,
         'glow-border-green': player.is_alive && canSeeRole && isRole(player, '狼人'),
         'glow-border-purple': player.is_alive && canSeeRole && isRole(player, '平民'),
         'glow-border-blue': player.is_alive && canSeeRole && isRole(player, '预言家'),
@@ -129,6 +130,10 @@ const props = defineProps({
   speeches: {
     type: Array,
     default: () => []
+  },
+  isSpeaking: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -224,6 +229,7 @@ function getAbilityText(player) {
   font-weight: bold;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+  position: relative;
 }
 
 .player-avatar.alive {
@@ -371,6 +377,41 @@ function getAbilityText(player) {
 }
 .speech-available:hover .player-avatar {
   box-shadow: 0 0 12px rgba(34, 211, 238, 0.5), 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* TTS 播放中呼吸光晕 */
+.speaking-now {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2);
+  transform: translateY(-3px);
+  animation: breathe-card 1.4s ease-in-out infinite;
+}
+.speaking-now .player-avatar {
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.6), 0 4px 15px rgba(79, 70, 229, 0.3);
+  animation: breathe-avatar 1.4s ease-in-out infinite;
+}
+.speaking-now .player-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(34, 197, 94, 0.5);
+  animation: breathe-ring 1.4s ease-in-out infinite;
+}
+.speaking-now .player-name {
+  color: #4ade80 !important;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+@keyframes breathe-card {
+  0%, 100% { box-shadow: 0 0 12px rgba(34, 197, 94, 0.3), 0 0 25px rgba(34, 197, 94, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6), 0 0 50px rgba(34, 197, 94, 0.3); }
+}
+@keyframes breathe-avatar {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(34, 197, 94, 0.4), 0 4px 15px rgba(79, 70, 229, 0.3); }
+  50% { transform: scale(1.08); box-shadow: 0 0 24px rgba(34, 197, 94, 0.8), 0 4px 15px rgba(79, 70, 229, 0.5); }
+}
+@keyframes breathe-ring {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 /* 发言弹窗遮罩 */

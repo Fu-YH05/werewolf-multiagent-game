@@ -91,6 +91,7 @@
               :show-role="isGameOver"
               :is-human-mode="isHumanMode"
               :speeches="playerSpeeches[player.id] || []"
+              :is-speaking="speakingPlayerId === player.id"
               @annotate="handleAnnotate"
             />
           </div>
@@ -169,7 +170,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { gameApi } from './services/api'
 import ControlPanel from './components/ControlPanel.vue'
 import GameInfoBar from './components/GameInfoBar.vue'
@@ -229,6 +230,202 @@ const rightCollapsed = ref(false)
 // 白天阶段检测
 const dayPhases = ['天亮请睁眼', '自由发言', '放逐投票', '游戏结束']
 const isDaytime = computed(() => dayPhases.includes(phase.value))
+
+// ====================================================================
+// 音频播报系统：状态机驱动的串行语音队列
+// ====================================================================
+// 每一条 SPEECH 日志经历：
+//   日志出现 → audioPlayQueue.push({log_id, urls:[], text, ...})
+//      ├─ 有 audio_url？→ urls 填好 → 轮到队列头部时播放
+//      └─ 无 audio_url？→ 启动 3 秒超时
+//            ├─ 3 秒内 audio_url 到达 → 更新 urls → 正常播放 edge-tts
+//            └─ 3 秒超时 → fallback=true → 播放浏览器 TTS（且 edge-tts 后来到的丢弃）
+// 队列处理器（processAudioQueue）：串行，一次只播一个，播完才处理下一个
+// ====================================================================
+const speakingPlayerId = ref(null)
+const audioPlayQueue = []             // 音频队列（FIFO，元素带状态）
+let isAudioPlaying = false
+const playedLogIds = new Set()        // 已播完的 log_id（任何方式）
+const fallbackLogIds = new Set()      // 已降级到浏览器 TTS 的 log_id
+const pendingTimers = {}              // {log_id: setTimeoutId} - 降级超时
+
+/** 向队列中添加或更新一条语音条目 */
+function enqueueSpeechLog(log) {
+  const logId = log.log_id
+  if (!logId || playedLogIds.has(logId) || fallbackLogIds.has(logId)) return
+
+  // 提取发言文本
+  const text = cleanSpeechText(log.content || '')
+  if (!text) return
+
+  const audioUrls = log.audio_url ? log.audio_url.split(',').filter(Boolean) : []
+
+  // 查找是否已在队列中
+  let item = audioPlayQueue.find(i => i.logId === logId)
+  if (item) {
+    // 更新 urls（可能刚被后台线程回填）
+    if (audioUrls.length && !item.audioUrls.length) {
+      item.audioUrls = audioUrls
+      // 有音频了，取消降级定时器
+      if (pendingTimers[logId]) {
+        clearTimeout(pendingTimers[logId])
+        delete pendingTimers[logId]
+      }
+    }
+    return
+  }
+
+  // 新条目，推入队尾
+  item = {
+    logId,
+    playerId: log.player_id,
+    audioUrls: [...audioUrls],
+    text,
+    day: log.day || 0,
+    phase: log.phase || '',
+    fallbackReady: false,   // 3秒超时后设为 true
+  }
+
+  // 检查发言是否已过时（游戏已进入下一天）
+  if (day.value && item.day < day.value) {
+    playedLogIds.add(logId)
+    return
+  }
+
+  audioPlayQueue.push(item)
+
+  // 如果没有音频，设 3 秒降级超时
+  if (!audioUrls.length && !pendingTimers[logId]) {
+    pendingTimers[logId] = setTimeout(() => {
+      // 超时触发降级
+      const queued = audioPlayQueue.find(i => i.logId === logId)
+      if (queued && !playedLogIds.has(logId) && !queued.audioUrls.length) {
+        queued.fallbackReady = true
+        delete pendingTimers[logId]
+        processAudioQueue()  // 触发队列处理（可能当前正在播别的，但播完这条会被处理）
+      }
+    }, 3000)
+  }
+
+  processAudioQueue()
+}
+
+/** 串行队列处理器：一次只播一条 */
+function processAudioQueue() {
+  if (isAudioPlaying || audioPlayQueue.length === 0) return
+
+  const item = audioPlayQueue[0]  // peek
+
+  // 检查是否过时（游戏已进入下一天），过时则跳过
+  if (day.value && item.day < day.value) {
+    finishAudioItem(item.logId)
+    return
+  }
+
+  isAudioPlaying = true
+  speakingPlayerId.value = item.playerId
+
+  // 情况 A：有 edge-tts 音频 → 播 URL 序列
+  if (item.audioUrls.length > 0) {
+    playUrlSequence([...item.audioUrls], () => finishAudioItem(item.logId))
+    return
+  }
+
+  // 情况 B：降级超时已到 → 浏览器 TTS
+  if (item.fallbackReady || fallbackLogIds.has(item.logId)) {
+    fallbackLogIds.add(item.logId)
+    playBrowserFallback(item)
+    // 浏览器 TTS 播放结束由 onend 回调触发 finishAudioItem
+    return
+  }
+
+  // 情况 C：音频还没到、降级还没触发 → 等 200ms 再检查
+  isAudioPlaying = false
+  speakingPlayerId.value = null
+  setTimeout(processAudioQueue, 200)
+}
+
+/** 播放 URL 序列（多段音频依次播完） */
+function playUrlSequence(urls, onDone) {
+  if (urls.length === 0) { onDone(); return }
+  const url = urls.shift()
+  const audio = new Audio(url)
+  audio.onended = () => playUrlSequence(urls, onDone)
+  audio.onerror = () => playUrlSequence(urls, onDone)
+  audio.play().catch(() => playUrlSequence(urls, onDone))
+}
+
+/** 完成一条语音（无论何种方式） */
+function finishAudioItem(logId) {
+  playedLogIds.add(logId)
+  if (pendingTimers[logId]) {
+    clearTimeout(pendingTimers[logId])
+    delete pendingTimers[logId]
+  }
+  audioPlayQueue.shift()  // 出队
+  isAudioPlaying = false
+  speakingPlayerId.value = null
+  processAudioQueue()
+}
+
+/** 监听日志变化：新发言入队 */
+watch(() => logs.value, (newLogs) => {
+  if (viewingReplay.value) return
+  for (const log of newLogs) {
+    if (log?.type === 'SPEECH' && log.player_id) {
+      enqueueSpeechLog(log)
+    }
+  }
+})
+
+// ====================================================================
+// 浏览器语音合成（降级方案）
+// ====================================================================
+const synth = window.speechSynthesis
+let playerVoices = {}
+function initVoices() {
+  const voices = synth.getVoices()
+  const zhVoices = voices.filter(v => v.lang.startsWith('zh'))
+  if (zhVoices.length === 0) return
+  const players = ['P1','P2','P3','P4','P5','P6','P7','P8','P9']
+  players.forEach((pid, i) => {
+    playerVoices[pid] = zhVoices[i % zhVoices.length]
+  })
+}
+if (synth) {
+  initVoices()
+  synth.onvoiceschanged = initVoices
+}
+
+function playBrowserFallback(item) {
+  if (!synth || !item.text) return
+  const utterance = new SpeechSynthesisUtterance(item.text)
+  utterance.lang = 'zh-CN'
+  utterance.rate = 1.0
+  utterance.pitch = 1.0
+  if (playerVoices[item.playerId]) {
+    utterance.voice = playerVoices[item.playerId]
+  }
+  utterance.onstart = () => { speakingPlayerId.value = item.playerId }
+  utterance.onend = () => { finishAudioItem(item.logId) }
+  utterance.onerror = () => { finishAudioItem(item.logId) }
+  synth.speak(utterance)
+}
+
+/** 清理发言文本前缀 */
+function cleanSpeechText(content) {
+  if (!content) return ''
+  // 去掉 "发言:" 前缀
+  const match = content.match(/发言[:：]\s*(.*)/)
+  let text = match ? match[1].trim() : content.trim()
+  // 移除 XML/HTML 标签（<VOTE> <KILL> 等）
+  text = text.replace(/<[^>]+>/g, '')
+  // 移除 Markdown 符号和括号
+  text = text.replace(/[#*_~`\[\]()>|【】]/g, '')
+  // 压缩空白
+  text = text.replace(/\s+/g, ' ').trim()
+  return text
+}
 
 const emptyMessage = computed(() => {
   if (viewingReplay.value) return '观看回放中'

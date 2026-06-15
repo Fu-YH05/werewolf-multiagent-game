@@ -98,6 +98,8 @@ class WerewolfEngine:
         self._human_action_future: Optional[asyncio.Future] = None
         self._human_pending_action: Optional[Dict] = None
         self._game_loop: Optional[asyncio.AbstractEventLoop] = None
+        # TTS 管理器
+        self.tts_manager = self.config.get("tts_manager", None)
         # 停止请求标志
         self._stop_requested = False
         self._initialize_llm_client()
@@ -113,14 +115,41 @@ class WerewolfEngine:
         else:
             self.llm_client = None
 
-    def log_event(self, event_type: str, content: str, hidden: bool = False, player_id: Optional[str] = None):
+    def _get_speaker_idx(self, player_id: str) -> int:
+        """根据玩家ID映射到固定的声线索引 (0-8)"""
+        try:
+            num = int(player_id.replace("P", "")) - 1
+            return max(0, min(num, 8))
+        except (ValueError, AttributeError):
+            return 0
+
+    def _generate_tts(self, text: str, player_id: str) -> Optional[Dict]:
+        """生成语音，失败时自动重试一次"""
+        if not self.tts_manager or not text:
+            return None
+        result = self.tts_manager.generate(
+            text, player_id, self._get_speaker_idx(player_id)
+        )
+        if result:
+            return result
+        # 失败时重试一次（edge-tts 云端偶尔会瞬断）
+        import time
+        time.sleep(1)
+        return self.tts_manager.generate(
+            text, player_id, self._get_speaker_idx(player_id)
+        )
+
+    def log_event(self, event_type: str, content: str, hidden: bool = False, player_id: Optional[str] = None, audio_url: Optional[str] = None):
+        import uuid
         log_entry = {
+            "log_id": uuid.uuid4().hex[:12],
             "day": self.state.day,
             "phase": self.state.phase.value,
             "type": event_type,
             "content": content,
             "hidden": hidden,
             "player_id": player_id,
+            "audio_url": audio_url,
             "timestamp": datetime.now().isoformat()
         }
         self.state.logs.append(log_entry)
@@ -300,6 +329,8 @@ class WerewolfEngine:
             await asyncio.sleep(self.step_delay)
 
     async def run_day_phase(self):
+        with open("C:/Users/aaa/AppData/Local/Temp/game_trace.txt", "a", encoding="utf-8") as _f:
+            _f.write(f"run_day_phase STARTED\n")
         self.state.phase = GamePhase.DAY_START
         deads = []
         
@@ -331,10 +362,34 @@ class WerewolfEngine:
             self.log_event("INFO", f"首轮发言随机顺序: {','.join([p.id for p in alive_players])}")
         
         for p in alive_players:
+            with open("C:/Users/aaa/AppData/Local/Temp/game_trace.txt", "a", encoding="utf-8") as _f:
+                _f.write(f"ABOUT_TO_SPEAK [{p.id}]\n")
             speech = await self.request_agent_decision(p, "speak", None)
-            self.log_event("SPEECH", f"{p.id}({p.name}) 发言: {speech}")
+            print(f"[TTS-DEBUG] [{p.id}] 发言文本{len(speech)}字: {speech[:50]}", flush=True)
+
+            # 同步生成 TTS（在独立线程中运行避免阻塞事件循环）
+            loop = asyncio.get_event_loop()
+            try:
+                tts_result = await loop.run_in_executor(None, self._generate_tts, speech, p.id)
+                pass
+            except Exception as e:
+                print(f"[TTS] [{p.id}] 生成失败: {e}")
+                tts_result = None
+
+            audio_url = ""
+            wait_time = 0.0
+            if tts_result:
+                audio_url = self.tts_manager.get_audio_url(tts_result["filepath"])
+                wait_time = float(tts_result.get("duration", 0))
+
+            self.log_event("SPEECH", f"{p.id}({p.name}) 发言: {speech}", player_id=p.id, audio_url=audio_url)
             self.record_action(p.id, "speak", None, speech)
-            await asyncio.sleep(self.step_delay * 0.6)  # 发言间短延迟
+
+            # 等待语音播完再继续（音频时长 + 0.5s 缓冲）
+            # 即使 TTS 失败也至少等 2s，让用户有时间阅读日志
+            min_wait = max(2.0, self.step_delay)
+            actual_wait = max(min_wait, wait_time + 0.5)
+            await asyncio.sleep(actual_wait)
         
         self.state.phase = GamePhase.VOTE
         self.log_event("VOTE_START", "进入放逐投票阶段")
