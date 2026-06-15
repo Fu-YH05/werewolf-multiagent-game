@@ -123,23 +123,8 @@ class TTSManager:
 
             # 构建 edge-tts Communicate
             import edge_tts
-            communicate = edge_tts.Communicate(cleaned, voice=voice)
-
-            # 如果设置了语速/音高，使用 SSML
-            if style:
-                rate = style.get("rate", "0%")
-                pitch = style.get("pitch", "0Hz")
-                ssml = (
-                    f'<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"'
-                    f' xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="zh-CN">'
-                    f'<voice name="{voice}">'
-                    f'<prosody rate="{rate}" pitch="{pitch}">'
-                    f'{cleaned}'
-                    f'</prosody>'
-                    f'</voice>'
-                    f'</speak>'
-                )
-                communicate = edge_tts.Communicate(ssml, voice=voice)
+            rate = style.get("rate", "+0%") if style else "+0%"
+            communicate = edge_tts.Communicate(cleaned, voice=voice, rate=rate)
 
             # 生成音频文件
             start = time.time()
