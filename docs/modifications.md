@@ -214,7 +214,7 @@
 | `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 点击查看发言、speech 弹窗 |
 | `frontend/src/components/LogsPanel.vue` | ✅ 修改 | 昼夜背景、笔记区域、可拖拽分割条 |
 | `frontend/src/components/HumanActionPanel.vue` | ✅ 修改 | 语音输入（🎤 按钮 + Web Speech API）|
-| `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
+| `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词、SML 标签修复、话术扩充 |
 | `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
 | `docs/modifications.md` | 🆕 新增 | 本文件 |
 
@@ -430,7 +430,55 @@ await asyncio.sleep(max(2.0, wait_time + 0.5))  # 等音频播完
 
 ---
 
-## 12. 完整文件变更汇总
+## 12. 组员合并 + 整合修复
+
+### 12.1 组员提交内容（3 个 commit）
+
+**SML 标签修复** (`b5337fe`)
+- `agents/role_agents.py`: 修复 AI 发言把 `<VOTE>` 标签当作普通文本朗读的 bug
+- 系统提示增加限制，确保尖括号标签不在发言中出现
+
+**话术扩充** (`b94cb7a`)
+- `agents/role_agents.py`: 无 API Key 时，每个角色从 4~7 种发言模板中 `random.choice` 随机选择
+- 狼人增加伪装预言家/女巫的话术，猎人增加强硬威慑话术
+
+**登录页面** (`6ce57a5`)
+- `frontend/src/LoginView.vue`: 全新登录页（星空背景 + API Key 输入 + 进入按钮）
+- `frontend/src/AppRoot.vue`: 根组件，登录前显示 LoginView，登录后显示 App.vue
+- `frontend/src/main.js`: 改为挂载 AppRoot 而非直接挂载 App
+
+### 12.2 API Key 传递修复
+
+**问题**: 登录页输入的 API Key 保存到 `localStorage`，但 `ControlPanel.vue` 初始化为空字符串，进游戏后 Key 丢失
+
+**修复**:
+- `frontend/src/components/ControlPanel.vue`: 初始化时从 `localStorage.getItem('deepseek_api_key')` 读取
+
+### 12.3 停止/重启问题状态 ⚠️
+
+**当前状态: 未解决**
+
+已知问题：
+- 停止游戏后立即重启有概率出现 400 错误
+- 旧 server 进程未完全退出，端口占用
+- 临时方案：`taskkill /F /IM python.exe` 后重试
+- 根因：游戏线程（ThreadPoolExecutor + asyncio）的停止/清理链路不完整，`game_running = False` 强制标记后仍可能有残留状态
+
+---
+
+## 13. 分支合并说明
+
+合并方式：`git rebase origin/main`
+```
+c3bcb86 --- b5337fe --- b94cb7a --- 6ce57a5  (origin/main 组员提交)
+                                       \
+                                        cd817dc  (四维分析看板 rebased)
+```
+- 无代码冲突，三方提交的文件无重叠
+
+---
+
+## 14. 完整文件变更汇总
 
 | 文件 | 变更类型 | 说明 |
 |------|----------|------|
@@ -438,7 +486,10 @@ await asyncio.sleep(max(2.0, wait_time + 0.5))  # 等音频播完
 | `engine/tts_manager.py` | ✅ 重写 | ChatTTS → edge-tts，返回 `{filepath, duration}` 格式，豆包语音支持 |
 | `frontend/server.py` | ✅ 修改 | 停止路由、排行榜从日志统计、路径修复、`start_time` 返回、强制停止、豆包语音参数 |
 | `frontend/src/services/api.js` | ✅ 修改 | 新增 `stopGame()` |
-| `frontend/src/components/ControlPanel.vue` | ✅ 修改 | 结束按钮、开始按钮始终可用、豆包 TTS 开关 |
+| `frontend/src/components/ControlPanel.vue` | ✅ 修改 | 结束按钮、开始按钮始终可用、豆包 TTS 开关、登录页 API Key 读取 |
+| `frontend/src/AppRoot.vue` | 🆕 新增 | 登录/游戏根路由（组员提交） |
+| `frontend/src/LoginView.vue` | 🆕 新增 | 登录页面（组员提交） |
+| `frontend/src/main.js` | ✅ 修改 | 改为挂载 AppRoot（组员提交） |
 | `frontend/src/App.vue` | ✅ 重写 | 回放分离、刷新恢复、自动停止、侧栏折叠、昼夜检测、音频队列状态机、四维分析看板集成 |
 | `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 点击查看发言、speech 弹窗、呼吸灯动画 |
 | `frontend/src/components/LogsPanel.vue` | ✅ 修改 | 昼夜背景、笔记区域、可拖拽分割条、日志跳转高亮、`defineExpose` |

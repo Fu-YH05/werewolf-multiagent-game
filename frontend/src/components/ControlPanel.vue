@@ -148,6 +148,10 @@ const props = defineProps({
 const emit = defineEmits(['start', 'togglePause', 'stop', 'showReplay'])
 
 const apiKey = ref('')
+
+// 从登录页保存的 localStorage 读取 API Key
+const savedKey = localStorage.getItem('deepseek_api_key')
+if (savedKey) apiKey.value = savedKey
 const isHumanMode = ref(false)
 const humanPlayerIndex = ref(0)  // 默认真人坐在第1个位置
 const stepDelay = ref(1.5)  // 默认1.5秒/步
