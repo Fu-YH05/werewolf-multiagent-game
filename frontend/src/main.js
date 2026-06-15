@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import AppRoot from './AppRoot.vue'
 import './styles/main.css'
 
-const app = createApp(App)
+const app = createApp(AppRoot)
 app.mount('#app')
