@@ -1,5 +1,5 @@
 <template>
-  <div :class="['log-entry', logClass]">
+  <div :class="['log-entry', logClass, { highlighted: props.highlighted }]">
     <span class="log-time">{{ formattedTime }}</span>
     <span class="log-phase">{{ log?.phase || '' }}</span>
     <div class="log-content">{{ log?.content }}</div>
@@ -13,6 +13,10 @@ const props = defineProps({
   log: {
     type: Object,
     default: () => ({})
+  },
+  highlighted: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -36,6 +40,24 @@ const logClass = computed(() => {
 </script>
 
 <style scoped>
+.log-entry.highlighted {
+  animation: highlight-flash 1.5s ease-out;
+  border-radius: 6px;
+}
+
+@keyframes highlight-flash {
+  0% {
+    background: rgba(250, 204, 21, 0.25);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.15);
+  }
+  50% {
+    background: rgba(250, 204, 21, 0.12);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
 .log-time {
   @apply text-xs text-gray-400 mr-2;
 }

@@ -202,7 +202,7 @@
 
 ---
 
-## 5. 文件变更汇总
+## 5. 文件变更汇总（第一阶段）
 
 | 文件 | 变更类型 | 说明 |
 |------|----------|------|
@@ -217,12 +217,6 @@
 | `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
 | `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
 | `docs/modifications.md` | 🆕 新增 | 本文件 |
-| `engine/tts_manager.py` | ✅ 重写 | ChatTTS → edge-tts，返回 `{filepath, duration}` 格式 |
-| `frontend/server.py` | ✅ 修改 | log_id 匹配、ThreadPoolExecutor、文本清洗、game_active 生命周期 |
-| `frontend/src/App.vue` | ✅ 重写 | 状态机音频队列、3s 超时、freshness 检查、标签清洗 |
-| `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 呼吸灯动画（3层CSS：光环+缩放+环脉冲）|
-| `agents/role_agents.py` | ✅ 修改 | 发言提示词更口语化（语气词、短句、示例） |
-| `requirements.txt` | ✅ 修改 | 移除 ChatTTS/torch/soundfile，添加 edge-tts |
 
 ---
 
@@ -346,3 +340,117 @@ await asyncio.sleep(max(2.0, wait_time + 0.5))  # 等音频播完
 - 3 层 CSS 动画：`breathe-card`（外发光）+ `breathe-avatar`（头像缩放）+ `breathe-ring`（环脉冲）
 - 发言时玩家名称变色 + 文字发光
 - `.player-avatar` 增加 `position: relative` 支持伪元素
+
+### 10.4 停止/重启修复（仍有问题 ⚠️）
+
+**涉及文件**: `frontend/server.py`、`frontend/src/App.vue`
+
+**改动**:
+- `server.py` `stop_game()`: 改为强制设置 `game_running = False`，清空 `game_active`、`tts_results`、`game_states`、`game_logs_queue`，不等线程退出，允许立即开始新局
+- `App.vue` `startGame()`: 开始时先调 `stopGame()` 再等待服务器确认停止（最多 5 秒）
+- `App.vue` `stopGame()`: 调用 API 后立即 `resetAudioQueue()` + `stopPolling()`
+- `App.vue`: 新增 `resetAudioQueue()` 清空音频状态
+
+**⚠️ 已知问题**: 停止后重启仍有概率出现 400 错误（旧 server 进程未完全退出占用端口），需手动 `taskkill /F /IM python.exe` 后重试。
+
+---
+
+## 11. 四维分析看板
+
+新增 4 个可视化分析功能，帮助玩家洞察游戏数据。
+
+### 11.1 投票关系网络图 🔗
+
+**涉及文件**:
+- `frontend/src/components/analysis/VoteNetworkModal.vue`
+
+**改动**:
+- 基于 D3.js force-directed graph 的力导向图弹窗
+- 节点 = 玩家（圆形，按角色着色）
+- 有向边 = 投票方向，边粗细 = 投票次数
+- 节点可拖拽，鼠标悬停显示详情
+- 游戏结束后按阵营着色（狼人红/预言家蓝/女巫紫/猎人橙/平民绿）
+- 按钮：「🔗 关系网络」在投票记录旁
+
+### 11.2 游戏时间线侧边条 ⏱
+
+**涉及文件**:
+- `frontend/src/components/analysis/TimelineStrip.vue`
+
+**改动**:
+- 36px 宽的竖条，嵌在中间游戏区域左侧
+- 每条日志对应一个小圆点，按日志类型着色
+- **点击圆点 → LogsPanel 自动滚动到对应日志 + 金色高亮闪烁动画**
+- 旁有 D1/D2/D3 天数标记
+
+### 11.3 玩家存活淘汰树 🌳
+
+**涉及文件**:
+- `frontend/src/components/analysis/EliminationTree.vue`
+
+**改动**:
+- 从日志中解析每晚死亡、白天放逐、女巫毒杀、猎人带走事件
+- 按天展示存活玩家和淘汰事件
+- 平安夜显示「🌙 平安夜」而非错误死亡
+- 按钮弹出紧凑模态框
+
+### 11.4 发言情绪热力图 🔥
+
+**涉及文件**:
+- `frontend/src/utils/emotionAnalysis.js`
+- `frontend/src/components/analysis/EmotionHeatmap.vue`
+
+**改动**:
+- 关键词字典方案（方案 A）进行情绪分析：
+  - 语气词（啊、呀、吧、我去、天哪）：+2/个
+  - 强调词（绝对、一定、太、超级）：+3/个
+  - 反问词（为什么、怎么、难道）：+2/个
+  - 感叹号：+1/个
+  - 冷静词（嗯、可能、也许）：-1/个
+  - 归一化到 0-100 分
+- 矩阵网格：Y 轴=玩家，X 轴=天数
+- 色阶：深蓝(冷静) → 橙黄(正常) → 深红(非常激动)
+- 悬停显示发言次数和平均情绪分
+- 按钮弹出紧凑模态框
+
+### 11.5 日志跳转高亮
+
+**涉及文件**:
+- `frontend/src/components/LogsPanel.vue`
+- `frontend/src/components/LogEntry.vue`
+
+**改动**:
+- LogsPanel 新增 `highlightLogIndex` prop 和 `scrollToLog()` 暴露方法
+- LogEntry 新增 `highlighted` prop，金色闪烁动画
+- `displayLogsWithOrigIdx` 计算属性维护原始索引映射
+
+### 11.6 新增依赖
+
+- `frontend/package.json`：添加 `d3: ^7.9.0`
+
+---
+
+## 12. 完整文件变更汇总
+
+| 文件 | 变更类型 | 说明 |
+|------|----------|------|
+| `engine/game_engine.py` | ✅ 修改 | 停止标志、`request_stop()`、`log_dir` 支持、异常时保存日志、`player_id` 修复、旁白 TTS |
+| `engine/tts_manager.py` | ✅ 重写 | ChatTTS → edge-tts，返回 `{filepath, duration}` 格式，豆包语音支持 |
+| `frontend/server.py` | ✅ 修改 | 停止路由、排行榜从日志统计、路径修复、`start_time` 返回、强制停止、豆包语音参数 |
+| `frontend/src/services/api.js` | ✅ 修改 | 新增 `stopGame()` |
+| `frontend/src/components/ControlPanel.vue` | ✅ 修改 | 结束按钮、开始按钮始终可用、豆包 TTS 开关 |
+| `frontend/src/App.vue` | ✅ 重写 | 回放分离、刷新恢复、自动停止、侧栏折叠、昼夜检测、音频队列状态机、四维分析看板集成 |
+| `frontend/src/components/PlayerCard.vue` | ✅ 修改 | 点击查看发言、speech 弹窗、呼吸灯动画 |
+| `frontend/src/components/LogsPanel.vue` | ✅ 修改 | 昼夜背景、笔记区域、可拖拽分割条、日志跳转高亮、`defineExpose` |
+| `frontend/src/components/LogEntry.vue` | ✅ 修改 | 高亮动画 |
+| `frontend/src/components/HumanActionPanel.vue` | ✅ 修改 | 语音输入（🎤 按钮 + Web Speech API）|
+| `agents/role_agents.py` | ✅ 修改 | AI 发言自然化提示词 |
+| `frontend/src/components/analysis/TimelineStrip.vue` | 🆕 新增 | 游戏时间线侧边条 |
+| `frontend/src/components/analysis/VoteNetworkModal.vue` | 🆕 新增 | 投票关系网络图弹窗 |
+| `frontend/src/components/analysis/EliminationTree.vue` | 🆕 新增 | 玩家存活淘汰树 |
+| `frontend/src/components/analysis/EmotionHeatmap.vue` | 🆕 新增 | 发言情绪热力图 |
+| `frontend/src/utils/emotionAnalysis.js` | 🆕 新增 | 关键词情绪分析引擎 |
+| `frontend/package.json` | ✅ 修改 | 添加 `d3: ^7.9.0` |
+| `.gitignore` | 🆕 新增 | 排除 `__pycache__`、`dist` |
+| `docs/modifications.md` | 🆕 新增 | 本文件 |
+| `requirements.txt` | ✅ 修改 | 移除 ChatTTS/torch/soundfile，添加 edge-tts |

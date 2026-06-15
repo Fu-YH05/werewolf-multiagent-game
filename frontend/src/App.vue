@@ -67,6 +67,16 @@
       
       <!-- 中间游戏区域 -->
       <main class="game-area">
+        <div class="game-area-layout">
+          <!-- 游戏时间线（侧边竖条） -->
+          <TimelineStrip
+            v-if="logs.length > 0"
+            :logs="logs"
+            :current-day="day"
+            :active-index="highlightLogIndex"
+            @scroll-to-log="onTimelineScroll"
+          />
+          <div class="game-area-content">
         <div v-if="viewingReplay" class="replay-banner">
           <span>📽️ 观看回放 — {{ currentGameId }}</span>
           <span v-if="savedLiveState" class="replay-banner-actions">
@@ -106,21 +116,50 @@
             <span>🗳️ 投票记录 (第{{ voteResults[voteResults.length - 1]?.day }}天)</span>
             <span class="ml-2 text-xs">{{ showVotePanel ? '🔽 收起' : '🔼 展开' }}</span>
           </button>
+          <button
+            class="vote-network-btn"
+            @click="showVoteNetwork = !showVoteNetwork"
+            title="投票关系网络图"
+          >
+            <span>{{ showVoteNetwork ? '✕ 关闭' : '🔗 关系网络' }}</span>
+          </button>
         </div>
         <VotePanel v-if="showVotePanel && voteResults.length > 0" :vote-results="voteResults" />
+
+        <!-- 分析工具按钮 -->
+        <div v-if="logs.length > 0" class="analysis-btn-area">
+          <button
+            class="analysis-btn"
+            @click="showEliminationModal = !showEliminationModal"
+            title="玩家存活淘汰树"
+          >
+            <span>{{ showEliminationModal ? '✕' : '🌳' }} 存活树</span>
+          </button>
+          <button
+            class="analysis-btn"
+            @click="showEmotionModal = !showEmotionModal"
+            title="发言情绪热力图"
+          >
+            <span>{{ showEmotionModal ? '✕' : '🔥' }} 情绪图</span>
+          </button>
+        </div>
         
         <!-- 日志面板 -->
         <LogsPanel
+          ref="logsPanelRef"
           :logs="logs"
           :current-filter="currentFilter"
           :empty-message="emptyMessage"
           :is-human-mode="isHumanMode"
           :is-daytime="isDaytime"
           :game-id="currentGameId"
+          :highlight-log-index="highlightLogIndex"
           @filter-change="currentFilter = $event"
         />
+          </div><!-- .game-area-content -->
+        </div><!-- .game-area-layout -->
       </main>
-      
+
       <!-- 右侧信息面板 -->
       <aside class="sidebar-right" :class="{ collapsed: rightCollapsed }">
         <button class="collapse-btn collapse-right" @click="rightCollapsed = !rightCollapsed" :title="rightCollapsed ? '展开右侧' : '收起右侧'">
@@ -159,6 +198,40 @@
       <div class="loading-spinner"></div>
     </div>
     
+    <!-- 投票关系网络图弹窗 -->
+    <VoteNetworkModal
+      :visible="showVoteNetwork"
+      :logs="logs"
+      :players="players"
+      @close="showVoteNetwork = false"
+    />
+
+    <!-- 玩家存活淘汰树弹窗 -->
+    <div v-if="showEliminationModal" class="modal-overlay" @click.self="showEliminationModal = false">
+      <div class="modal-content modal-compact">
+        <div class="modal-header">
+          <h3 class="modal-title">🌳 玩家存活淘汰树</h3>
+          <button class="modal-close" @click="showEliminationModal = false">&times;</button>
+        </div>
+        <div class="modal-body-analysis">
+          <EliminationTree :logs="logs" :players="players" :expanded="true" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 发言情绪热力图弹窗 -->
+    <div v-if="showEmotionModal" class="modal-overlay" @click.self="showEmotionModal = false">
+      <div class="modal-content modal-compact">
+        <div class="modal-header">
+          <h3 class="modal-title">🔥 发言情绪热力图</h3>
+          <button class="modal-close" @click="showEmotionModal = false">&times;</button>
+        </div>
+        <div class="modal-body-analysis">
+          <EmotionHeatmap :logs="logs" :players="players" :expanded="true" />
+        </div>
+      </div>
+    </div>
+
     <!-- 人类玩家操作面板 -->
     <HumanActionPanel
       :visible="!!humanPendingAction"
@@ -181,6 +254,12 @@ import HistoryList from './components/HistoryList.vue'
 import RolesInfo from './components/RolesInfo.vue'
 import VotePanel from './components/VotePanel.vue'
 import HumanActionPanel from './components/HumanActionPanel.vue'
+
+// 分析看板组件
+import TimelineStrip from './components/analysis/TimelineStrip.vue'
+import VoteNetworkModal from './components/analysis/VoteNetworkModal.vue'
+import EliminationTree from './components/analysis/EliminationTree.vue'
+import EmotionHeatmap from './components/analysis/EmotionHeatmap.vue'
 
 // 生成星空
 const stars = ref([])
@@ -218,6 +297,22 @@ const humanPendingAction = ref(null)
 const isHumanMode = ref(false)
 const showVotePanel = ref(false)
 const annotations = ref({})
+const showVoteNetwork = ref(false)
+const showEliminationModal = ref(false)
+const showEmotionModal = ref(false)
+const highlightLogIndex = ref(-1)
+const logsPanelRef = ref(null)
+
+/** 时间线点击：跳转到对应日志并高亮 */
+function onTimelineScroll(logIndex) {
+  highlightLogIndex.value = logIndex
+  // 用 setTimeout 重置高亮，触发动画重播
+  setTimeout(() => { highlightLogIndex.value = -1 }, 1500)
+  // 让 LogsPanel 滚动到对应位置
+  if (logsPanelRef.value?.scrollToLog) {
+    logsPanelRef.value.scrollToLog(logIndex)
+  }
+}
 
 // 回放/直播分离状态
 const viewingReplay = ref(false)
@@ -245,9 +340,35 @@ const isDaytime = computed(() => dayPhases.includes(phase.value))
 const speakingPlayerId = ref(null)
 const audioPlayQueue = []             // 音频队列（FIFO，元素带状态）
 let isAudioPlaying = false
+let currentAudio = null               // 当前正在播放的 Audio 元素
 const playedLogIds = new Set()        // 已播完的 log_id（任何方式）
 const fallbackLogIds = new Set()      // 已降级到浏览器 TTS 的 log_id
 const pendingTimers = {}              // {log_id: setTimeoutId} - 降级超时
+
+/** 重置音频队列：停止播放、清空队列、取消所有定时器 */
+function resetAudioQueue() {
+  // 停止当前播放的音频
+  if (currentAudio) {
+    currentAudio.pause()
+    currentAudio = null
+  }
+  // 停止浏览器 TTS
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel()
+  }
+  // 清空队列
+  audioPlayQueue.length = 0
+  isAudioPlaying = false
+  speakingPlayerId.value = null
+  // 清空状态集合
+  playedLogIds.clear()
+  fallbackLogIds.clear()
+  // 取消所有降级定时器
+  for (const key of Object.keys(pendingTimers)) {
+    clearTimeout(pendingTimers[key])
+    delete pendingTimers[key]
+  }
+}
 
 /** 向队列中添加或更新一条语音条目 */
 function enqueueSpeechLog(log) {
@@ -350,9 +471,10 @@ function playUrlSequence(urls, onDone) {
   if (urls.length === 0) { onDone(); return }
   const url = urls.shift()
   const audio = new Audio(url)
-  audio.onended = () => playUrlSequence(urls, onDone)
-  audio.onerror = () => playUrlSequence(urls, onDone)
-  audio.play().catch(() => playUrlSequence(urls, onDone))
+  currentAudio = audio
+  audio.onended = () => { if (currentAudio === audio) currentAudio = null; playUrlSequence(urls, onDone) }
+  audio.onerror = () => { if (currentAudio === audio) currentAudio = null; playUrlSequence(urls, onDone) }
+  audio.play().catch(() => { if (currentAudio === audio) currentAudio = null; playUrlSequence(urls, onDone) })
 }
 
 /** 完成一条语音（无论何种方式） */
@@ -508,18 +630,27 @@ async function loadLeaderboard() {
 }
 
 async function startGame(humanPlayerIndex = -1, stepDelay = 1.5) {
+  // 重置音频队列（清除上局残留）
+  resetAudioQueue()
+
   // 如果正在看回放，清除回放状态
   viewingReplay.value = false
   savedLiveState.value = null
 
-  // 如果已经有游戏在运行，先自动停止
-  if (isRunning.value) {
+  // 停止可能还在运行的上局游戏（前端 isRunning 可能已不同步）
+  try {
+    await gameApi.stopGame()
+  } catch (e) {
+    console.error('Failed to stop current game:', e)
+  }
+  stopPolling()  // 重置 isRunning 为 false
+  // 等待服务器确认游戏已完全停止（最多等 5 秒）
+  for (let i = 0; i < 25; i++) {
     try {
-      await gameApi.stopGame()
-    } catch (e) {
-      console.error('Failed to stop current game:', e)
-    }
-    stopPolling()  // 重置 isRunning 为 false
+      const statusResp = await gameApi.getStatus()
+      if (!statusResp.data.running) break
+    } catch (_) {}
+    await new Promise(r => setTimeout(r, 200))
   }
 
   isLoading.value = true
@@ -633,6 +764,8 @@ async function stopGame() {
   } finally {
     isLoading.value = false
   }
+  // 立即重置音频队列（停止播放、清空队列、取消定时器）
+  resetAudioQueue()
   stopPolling()  // 前端立即停止，不再询问该局
 }
 
@@ -897,6 +1030,72 @@ onUnmounted(() => {
 
 .vote-toggle-area {
   @apply flex justify-center flex-shrink-0;
+}
+
+.vote-network-btn {
+  @apply px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.vote-network-btn:hover {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #d8b4fe;
+}
+
+/* 分析工具按钮 */
+.analysis-btn-area {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.analysis-btn {
+  @apply px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  color: #86efac;
+  cursor: pointer;
+}
+
+.analysis-btn:hover {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+/* 紧凑模态框 */
+.modal-compact {
+  max-width: 600px !important;
+  padding: 16px 20px !important;
+}
+
+.modal-body-analysis {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* 时间线布局 */
+.game-area-layout {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.game-area-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .vote-toggle-btn {

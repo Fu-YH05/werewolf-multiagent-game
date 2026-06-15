@@ -17,11 +17,13 @@
       <div v-if="displayLogs.length === 0" class="empty-logs">
         {{ emptyMessage }}
       </div>
-      <LogEntry
-        v-for="(log, index) in displayLogs"
-        :key="index"
-        :log="log"
-      />
+      <template v-for="(entry, displayIdx) in displayLogsWithOrigIdx" :key="displayIdx">
+        <LogEntry
+          :ref="el => registerLogEntry(el, displayIdx)"
+          :log="entry.log"
+          :highlighted="entry.originalIndex === highlightLogIndex"
+        />
+      </template>
     </div>
     <div class="notes-header" @click="toggleNotes">
       <span class="notes-title">📝 {{ notesOpen ? '收起笔记' : '展开笔记' }}</span>
@@ -52,7 +54,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import LogEntry from './LogEntry.vue'
 
-const props = defineProps({
+let props = defineProps({
   logs: {
     type: Array,
     default: () => []
@@ -76,10 +78,12 @@ const props = defineProps({
   gameId: {
     type: String,
     default: ''
+  },
+  highlightLogIndex: {
+    type: Number,
+    default: -1
   }
 })
-
-defineEmits(['filterChange'])
 
 const logsContainer = ref(null)
 const notesOpen = ref(false)
@@ -185,12 +189,51 @@ const displayLogs = computed(() => {
   })
 })
 
-// 自动滚动到底部
+// 带原始索引的展示日志（用于时间线跳转）
+const displayLogsWithOrigIdx = computed(() => {
+  return displayLogs.value.map(log => ({
+    log,
+    originalIndex: props.logs.indexOf(log),
+  }))
+})
+
+// LogEntry 元素引用（用于跳转时计算滚动位置）
+const logEntryRefs = {}
+function registerLogEntry(el, displayIdx) {
+  if (el) logEntryRefs[displayIdx] = el
+}
+
+/**
+ * 滚动到指定原始日志索引位置并高亮
+ * @param {number} originalIndex - 在完整 logs 数组中的索引
+ */
+function scrollToLog(originalIndex) {
+  if (!logsContainer.value) return
+  // 找到该日志对应的展示索引
+  for (let i = 0; i < displayLogsWithOrigIdx.value.length; i++) {
+    if (displayLogsWithOrigIdx.value[i].originalIndex === originalIndex) {
+      const el = logEntryRefs[i]?.$el || logEntryRefs[i]
+      if (el && el.scrollIntoView) {
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      }
+      break
+    }
+  }
+}
+
+defineExpose({ scrollToLog })
+
+// 自动滚动到底部（未被高亮打断时）
 watch(() => props.logs.length, async () => {
   await nextTick()
-  if (logsContainer.value) {
+  if (logsContainer.value && props.highlightLogIndex < 0) {
     logsContainer.value.scrollTop = logsContainer.value.scrollHeight
   }
+})
+
+// 高亮索引变化时自动跳转
+watch(() => props.highlightLogIndex, (idx) => {
+  if (idx >= 0) scrollToLog(idx)
 })
 </script>
 

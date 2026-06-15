@@ -613,14 +613,17 @@ def stop_game():
             print("[API] 发送停止请求到游戏引擎...")
             current_game.request_stop()
 
-    # 等待游戏线程结束（最多 5 秒）
-    for _ in range(50):
-        if not game_running:
-            break
-        import time
-        time.sleep(0.1)
+    # 立即强制标记游戏为已停止（不等游戏线程退出）
+    game_running = False
+    with game_active_lock:
+        game_active = False
+    with tts_results_lock:
+        tts_results.clear()
+    # 重置游戏状态，允许立即开始新局
+    game_states.clear()
+    game_logs_queue.queue.clear()
 
-    print(f"[API] 游戏已停止, game_running={game_running}")
+    print(f"[API] 游戏已强制停止")
     return jsonify({"success": True, "message": "游戏已终止"})
 
 
