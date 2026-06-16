@@ -1,13 +1,12 @@
 <template>
   <div class="control-panel">
     <div class="section-title">游戏控制</div>
-    
-    <input
-      v-model="apiKey"
-      type="text"
-      placeholder="输入 DeepSeek API Key (可选)"
-      class="api-input"
-    />
+  
+  <!-- 登录状态显示 -->
+  <div class="login-status" :class="{ 'has-api': hasApiKey }">
+    <span class="status-icon">{{ hasApiKey ? '🔑' : '👤' }}</span>
+    <span class="status-text">{{ hasApiKey ? '用户登录' : '游客登录' }}</span>
+  </div>
     
     <!-- 真人玩家模式 -->
     <div class="human-mode-toggle">
@@ -152,6 +151,9 @@ const apiKey = ref('')
 // 从登录页保存的 localStorage 读取 API Key
 const savedKey = localStorage.getItem('deepseek_api_key')
 if (savedKey) apiKey.value = savedKey
+
+// 判断是否有 API Key
+const hasApiKey = ref(!!apiKey.value)
 const isHumanMode = ref(false)
 const humanPlayerIndex = ref(0)  // 默认真人坐在第1个位置
 const stepDelay = ref(1.5)  // 默认1.5秒/步
@@ -179,12 +181,26 @@ watch(apiKey, (newVal) => {
   @apply bg-bg-secondary p-3 border-r border-white/5 overflow-y-auto;
 }
 
-.api-input {
-  @apply w-full bg-bg-card border border-white/10 rounded-lg p-2 text-white text-sm mb-2;
+.login-status {
+  @apply flex items-center gap-2 w-full bg-bg-card border border-white/10 rounded-lg p-2 mb-2;
+  border-color: rgba(156, 163, 175, 0.3);
 }
 
-.api-input::placeholder {
-  @apply text-gray-400;
+.login-status.has-api {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.status-icon {
+  @apply text-lg;
+}
+
+.status-text {
+  @apply text-sm text-gray-300 font-medium;
+}
+
+.login-status.has-api .status-text {
+  color: #4ade80;
 }
 
 .status-item {

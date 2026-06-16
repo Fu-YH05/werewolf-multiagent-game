@@ -15,6 +15,8 @@ const isLoggedIn = ref(false)
 function handleEnter(apiKey) {
   if (apiKey) {
     localStorage.setItem('deepseek_api_key', apiKey)
+  } else {
+    localStorage.removeItem('deepseek_api_key')
   }
   isLoggedIn.value = true
 }
