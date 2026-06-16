@@ -524,6 +524,11 @@ function getAbilityText(player) {
   word-break: break-word;
 }
 
+/* 玩家卡片包装器 - 设置相对定位，使气泡相对于卡片定位 */
+.player-card-wrapper {
+  position: relative;
+}
+
 /* 发言气泡样式 - 悬浮于玩家卡片下方 */
 .speech-bubble {
   position: absolute;
