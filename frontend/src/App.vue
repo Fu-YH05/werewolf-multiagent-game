@@ -102,6 +102,7 @@
               :is-human-mode="isHumanMode"
               :speeches="playerSpeeches[player.id] || []"
               :is-speaking="speakingPlayerId === player.id"
+              :current-speech="speakingPlayerId === player.id ? currentSpeakingSpeech : ''"
               @annotate="handleAnnotate"
             />
           </div>
@@ -338,6 +339,7 @@ const isDaytime = computed(() => dayPhases.includes(phase.value))
 // 队列处理器（processAudioQueue）：串行，一次只播一个，播完才处理下一个
 // ====================================================================
 const speakingPlayerId = ref(null)
+const currentSpeakingSpeech = ref('')
 const audioPlayQueue = []             // 音频队列（FIFO，元素带状态）
 let isAudioPlaying = false
 let currentAudio = null               // 当前正在播放的 Audio 元素
@@ -445,6 +447,7 @@ function processAudioQueue() {
 
   isAudioPlaying = true
   speakingPlayerId.value = item.playerId
+  currentSpeakingSpeech.value = item.text
 
   // 情况 A：有 edge-tts 音频 → 播 URL 序列
   if (item.audioUrls.length > 0) {
@@ -463,6 +466,7 @@ function processAudioQueue() {
   // 情况 C：音频还没到、降级还没触发 → 等 200ms 再检查
   isAudioPlaying = false
   speakingPlayerId.value = null
+  currentSpeakingSpeech.value = ''
   setTimeout(processAudioQueue, 200)
 }
 
@@ -487,6 +491,7 @@ function finishAudioItem(logId) {
   audioPlayQueue.shift()  // 出队
   isAudioPlaying = false
   speakingPlayerId.value = null
+  currentSpeakingSpeech.value = ''
   processAudioQueue()
 }
 
@@ -534,7 +539,7 @@ function playBrowserFallback(item) {
   if (playerVoices[item.playerId]) {
     utterance.voice = playerVoices[item.playerId]
   }
-  utterance.onstart = () => { speakingPlayerId.value = item.playerId }
+  utterance.onstart = () => { speakingPlayerId.value = item.playerId; currentSpeakingSpeech.value = item.text }
   utterance.onend = () => { finishAudioItem(item.logId) }
   utterance.onerror = () => { finishAudioItem(item.logId) }
   synth.speak(utterance)

@@ -1,5 +1,6 @@
 <template>
   <div class="player-card-wrapper">
+    <!-- 玩家卡片 -->
     <div
       class="player-card glass-card rounded-xl p-2 text-center transition-all duration-300"
       :class="{
@@ -84,6 +85,16 @@
       </div>
     </div>
 
+    <!-- 发言气泡 - 悬浮于玩家卡片下方，与语音同步 -->
+    <Transition name="bubble-fade">
+      <div v-if="isSpeaking && currentSpeech" class="speech-bubble">
+        <div class="speech-bubble-tail"></div>
+        <div class="speech-bubble-content">
+          {{ currentSpeech }}
+        </div>
+      </div>
+    </Transition>
+
     <!-- 发言弹窗 -->
     <Teleport to="body">
       <div v-if="showSpeech" class="speech-overlay" @click="closeSpeech"></div>
@@ -134,6 +145,10 @@ const props = defineProps({
   isSpeaking: {
     type: Boolean,
     default: false
+  },
+  currentSpeech: {
+    type: String,
+    default: ''
   }
 })
 
@@ -507,5 +522,116 @@ function getAbilityText(player) {
   color: #cbd5e1;
   line-height: 1.4;
   word-break: break-word;
+}
+
+/* 发言气泡样式 - 悬浮于玩家卡片下方 */
+.speech-bubble {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 12px;
+  max-width: 280px;
+  min-width: 120px;
+  z-index: 100;
+}
+
+.speech-bubble-content {
+  background: linear-gradient(135deg, #22d3ee, #06b6d4);
+  color: #0f172a;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+  word-break: break-word;
+  box-shadow: 0 4px 20px rgba(34, 211, 238, 0.4);
+  position: relative;
+}
+
+/* 气泡三角箭头 - 指向上方 */
+.speech-bubble-tail {
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #06b6d4;
+}
+
+/* 气泡出现/消失动画 */
+.bubble-fade-enter-active {
+  animation: bubble-in 0.3s ease-out;
+}
+
+.bubble-fade-leave-active {
+  animation: bubble-out 0.2s ease-in;
+}
+
+@keyframes bubble-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes bubble-out {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px) scale(0.95);
+  }
+}
+
+/* 根据角色类型调整气泡颜色 */
+.player-card-wrapper:has(.glow-border-green) .speech-bubble-content {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+}
+.player-card-wrapper:has(.glow-border-green) .speech-bubble-tail {
+  border-bottom-color: #9333ea;
+}
+
+.player-card-wrapper:has(.glow-border-blue) .speech-bubble-content {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+.player-card-wrapper:has(.glow-border-blue) .speech-bubble-tail {
+  border-bottom-color: #2563eb;
+}
+
+.player-card-wrapper:has(.glow-border-pink) .speech-bubble-content {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+}
+.player-card-wrapper:has(.glow-border-pink) .speech-bubble-tail {
+  border-bottom-color: #db2777;
+}
+
+.player-card-wrapper:has(.glow-border-red) .speech-bubble-content {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4);
+}
+.player-card-wrapper:has(.glow-border-red) .speech-bubble-tail {
+  border-bottom-color: #ef4444;
+}
+
+.player-card-wrapper:has(.glow-border-purple) .speech-bubble-content {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  color: #1e293b;
+  box-shadow: 0 4px 20px rgba(203, 213, 225, 0.4);
+}
+.player-card-wrapper:has(.glow-border-purple) .speech-bubble-tail {
+  border-bottom-color: #cbd5e1;
 }
 </style>
