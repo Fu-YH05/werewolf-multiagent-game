@@ -57,6 +57,10 @@ game_init_error: Optional[str] = None
 game_initialized = threading.Event()  # 用于通知游戏初始化完成
 game_lock = threading.Lock()  # 用于保护共享变量的线程锁
 
+# 游戏线程引用（用于停止时等待退出）
+game_thread: Optional[threading.Thread] = None
+game_thread_lock = threading.Lock()  # 保护 game_thread 的锁
+
 
 def run_async_game(api_key: str = None, human_player_index: int = -1, step_delay: float = 1.5, use_doubao_tts: bool = False, doubao_api_key: str = "", doubao_appid: str = "", doubao_cluster: str = "volcano_tts"):
     """在后台线程中运行游戏"""
@@ -188,10 +192,12 @@ def start_game():
 
         # 在后台线程启动游戏
         print("[API] 创建游戏线程")
-        thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay, use_doubao_tts, doubao_api_key, doubao_appid, doubao_cluster), name="GameThread")
-        thread.daemon = True
-        print("[API] 启动游戏线程")
-        thread.start()
+        global game_thread
+        with game_thread_lock:
+            game_thread = threading.Thread(target=run_async_game, args=(api_key, human_player_index, step_delay, use_doubao_tts, doubao_api_key, doubao_appid, doubao_cluster), name="GameThread")
+            game_thread.daemon = True
+            print("[API] 启动游戏线程")
+            game_thread.start()
         
         print("[API] 游戏线程已启动，等待初始化...")
         
@@ -603,27 +609,53 @@ def submit_human_action(game_id: str):
 @app.route('/api/game/stop', methods=['POST'])
 def stop_game():
     """停止当前正在运行的游戏的接口"""
-    global current_game, game_running
+    global current_game, game_running, game_thread
 
     if not game_running:
         return jsonify({"success": True, "message": "当前没有游戏在运行"})
 
+    print("[API] 开始停止游戏...")
+
+    # 1. 发送停止请求到游戏引擎
     with game_lock:
         if current_game and hasattr(current_game, 'request_stop'):
             print("[API] 发送停止请求到游戏引擎...")
             current_game.request_stop()
 
-    # 立即强制标记游戏为已停止（不等游戏线程退出）
-    game_running = False
+    # 2. 标记游戏不再活跃（TTS 线程会检查此标志）
     with game_active_lock:
         game_active = False
+
+    # 3. 等待后台游戏线程退出（最多等待 10 秒）
+    thread_to_join = None
+    with game_thread_lock:
+        if game_thread and game_thread.is_alive():
+            thread_to_join = game_thread
+    
+    if thread_to_join:
+        print("[API] 等待游戏线程退出...")
+        try:
+            thread_to_join.join(timeout=10)
+            if thread_to_join.is_alive():
+                print("[API] ⚠️ 游戏线程退出超时，可能存在资源泄漏")
+            else:
+                print("[API] 游戏线程已正常退出")
+        except Exception as e:
+            print(f"[API] 等待线程退出时发生异常: {e}")
+    
+    # 4. 清理状态（线程退出后再清理）
+    game_running = False
     with tts_results_lock:
         tts_results.clear()
-    # 重置游戏状态，允许立即开始新局
     game_states.clear()
     game_logs_queue.queue.clear()
+    
+    with game_thread_lock:
+        game_thread = None
+    with game_lock:
+        current_game = None
 
-    print(f"[API] 游戏已强制停止")
+    print(f"[API] 游戏已完全停止")
     return jsonify({"success": True, "message": "游戏已终止"})
 
 
